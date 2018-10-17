@@ -41,7 +41,7 @@ doctrine:
     user:
     password:
     charset: UTF8
-    driver: pdo_mysql
+    driver: pdo_pgsql
     dbname:
     metadata:
         App\Entity: %srcDir%/Entity
