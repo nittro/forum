@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\ORM\Lookup;
 
 use App\Entity\Category;
+use App\Entity\Post;
 use App\Entity\Topic;
 use App\Entity\TopicSubscription;
 use App\Entity\User;
@@ -17,6 +18,16 @@ use Kdyby\Doctrine\QueryBuilder;
  * @method Topic[] toArray()
  */
 class TopicLookup extends AbstractLookup {
+
+    /** @var array */
+    private $replyCounts;
+
+    /** @var array */
+    private $unreadCounts;
+
+    /** @var int */
+    private $unreadBy = null;
+
 
     public function __construct(callable $queryBuilderFactory) {
         parent::__construct($queryBuilderFactory, 't');
@@ -42,6 +53,8 @@ class TopicLookup extends AbstractLookup {
     }
 
     public function unreadBy(int $uid) : self {
+        $this->unreadBy = $uid;
+
         $this->addCommonModifier(function(QueryBuilder $builder) use ($uid) : void {
             $builder->innerJoin(TopicSubscription::class, 's', Join::WITH, 's.topic = t AND s.user = :uid AND (s.lastRead IS NULL OR s.lastRead < t.lastPost)')
                 ->setParameter('uid', $uid);
@@ -77,6 +90,44 @@ class TopicLookup extends AbstractLookup {
         });
 
         return $this;
+    }
+
+
+    public function getReplyCount(Topic $topic) : int {
+        if (!isset($this->replyCounts)) {
+            $ids = $this->extract('id');
+
+            $builder = $this->createQueryBuilder()->resetDQLPart('from');
+            $builder->select('IDENTITY(p.topic) tid, COUNT(p.id) - 1 c');
+            $builder->from(Post::class, 'p');
+            $builder->whereCriteria(['p.topic' => $ids]);
+            $builder->groupBy('p.topic');
+            $this->replyCounts = array_column($builder->getQuery()->getArrayResult(), 'c', 'tid');
+        }
+
+        return $this->replyCounts[$topic->getId()] ?? 0;
+    }
+
+
+    public function getUnreadReplies(Topic $topic) : int {
+        if (!isset($this->unreadBy)) {
+            throw new \RuntimeException("Cannot load unread replies' counts when the unreadBy() method wasn't called");
+        } else if (!isset($this->unreadCounts)) {
+            $ids = $this->extract('id');
+
+            $builder = $this->createQueryBuilder()->resetDQLPart('from');
+            $builder->select('IDENTITY(s.topic) AS topic, COUNT(p.id) AS unread');
+            $builder->from(TopicSubscription::class, 's');
+            $builder->leftJoin(Post::class, 'p', Join::WITH, 'p.topic = s.topic AND p.id > s.lastRead');
+            $builder->whereCriteria([
+                's.user' => $this->unreadBy,
+                's.topic' => $ids,
+            ]);
+            $builder->groupBy('s.topic');
+            $this->unreadCounts = array_column($builder->getQuery()->getArrayResult(), 'unread', 'topic');
+        }
+
+        return $this->unreadCounts[$topic->getId()] ?? 0;
     }
 
 

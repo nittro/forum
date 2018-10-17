@@ -37,7 +37,6 @@ class HomePresenter extends BasePresenter {
             ->unreadBy($this->getUser()->getId());
 
         $control = $this->topicListControlFactory->create($topics);
-        $control->setMode(TopicListControl::MODE_LATEST);
         $control->showUnread();
         $control->disablePaging();
         $control->setPageSize(10);
@@ -50,7 +49,6 @@ class HomePresenter extends BasePresenter {
             ->withLastPost();
 
         $control = $this->topicListControlFactory->create($topics);
-        $control->setMode(TopicListControl::MODE_LATEST);
         $control->disablePaging();
         $control->setPageSize(10);
 

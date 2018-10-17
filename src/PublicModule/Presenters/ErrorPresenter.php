@@ -28,14 +28,23 @@ class ErrorPresenter extends BasePresenter {
         }
 
         if ($exception instanceof BadRequestException) {
-            if ($exception->getCode() === 403) {
+            $code = $exception->getHttpCode();
+
+            if ($code === 403) {
                 $this->setView('@e403');
             } else {
                 $this->setView('@e4xx');
             }
         } else {
-            $this->setView('@e5xx');
             $this->logger->log($exception, ILogger::EXCEPTION);
+            $this->setView('@e5xx');
+            $code = 500;
+        }
+
+        if ($this->isAjax()) {
+            $this->getHttpResponse()->setCode(200);
+        } else {
+            $this->getHttpResponse()->setCode($code);
         }
     }
 

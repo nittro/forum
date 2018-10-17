@@ -16,6 +16,10 @@ trait PagedControlTrait {
 
     private $pageSize = 20;
 
+    private $containerSnippetName = 'list';
+
+    private $itemSnippetName = 'item';
+
     private $pagingApplied = false;
 
 
@@ -46,8 +50,6 @@ trait PagedControlTrait {
 
     abstract protected function getResource() : AbstractLookup;
 
-    abstract public function getItemSnippetName() : string;
-
     abstract public function getPresenter($throw = true);
 
     abstract public function getComponent($name, $throw = true);
@@ -66,14 +68,42 @@ trait PagedControlTrait {
         return $this->getResource();
     }
 
+    protected function setupPaging($template, ?string $previousButtonLabel = null, ?string $nextButtonLabel = null) : void {
+        if ($this->paging) {
+            $template->paging = [
+                'first' => !$this->getComponent('page')->hasPrevious(),
+                'last' => !$this->getComponent('page')->hasNext(),
+            ];
+
+            if ($previousButtonLabel || $nextButtonLabel) {
+                $this->getComponent('page')->setButtonLabels($previousButtonLabel, $nextButtonLabel);
+            }
+        } else {
+            $template->paging = [
+                'first' => false,
+                'last' => false,
+            ];
+        }
+    }
+
+    protected function setContainerSnippetName(string $name) : void {
+        $this->containerSnippetName = $name;
+    }
+
+    protected function setItemSnippetName(string $name) : void {
+        $this->itemSnippetName = $name;
+    }
+
+
     private function pageChanged() : void {
-        $this->redrawControl('list');
+        $this->redrawControl($this->containerSnippetName);
         $this->getPresenter()->payload->order = $this->getPagedResource()->extract('id');
     }
 
     public function createComponentPage() : Paginator {
         $control = new Paginator($this->getResource()->getTotalCount(), $this->pageSize, $this->page);
-        $control->setItemSnippetName($this->getItemSnippetName());
+        $control->setContainerSnippetName($this->containerSnippetName);
+        $control->setItemSnippetName($this->itemSnippetName);
         $control->setHideClass('parent');
         $control->onPageChange[] = \Closure::fromCallable([$this, 'pageChanged']);
         return $control;

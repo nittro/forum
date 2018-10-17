@@ -1,0 +1,51 @@
+<div n:if="!$paging['first']" class="text-center small pb-3">
+    {control page:btnPrevious}
+</div>
+
+<div class="mt-3 px-3">
+    <div class="row align-items-end small text-muted">
+        <div class="col-auto"><span class="d-inline-block avatar mr-2"></span></div>
+        <div class="col-2">login</div>
+        <div class="col-3">name</div>
+        <div class="col-3">last login</div>
+        <div class="col-1">posts</div>
+    </div>
+</div>
+<div n:snippet="list" n:dynamic="user-\d+" data-dynamic-element="div.px-3.py-1.border-bottom" class="nittro-snippet-container border-top">
+    {foreach $users as $usr}
+        <div n:snippet="user-$usr->id" class="px-3 py-1 border-bottom">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <img alt="@{$usr->login}" class="avatar mr-2 rounded" src="{$usr|avatar:icon}" />
+                </div>
+                <div class="col-2">
+                    <strong>@{$usr->login}</strong>
+                </div>
+                <div class="col-3">
+                    {$usr->name}
+                </div>
+                <div class="col-3">
+                    {if $usr->account->lastLogin}
+                        <time class="small font-italic" n:datetime="$usr->account->lastLogin" />
+                    {else}
+                        <i class="small">never</i>
+                    {/if}
+                </div>
+                <div class="col-1">
+                    {$users->getPostCount($usr)}
+                </div>
+                <div class="col-auto ml-auto">
+                    <a href="{plink :Public:Profile: $usr}" data-ajax="false" title="{$usr->name}" class="small font-italic text-muted">
+                        see profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    {/foreach}
+</div>
+
+<div n:if="!$paging['last']" class="pt-3 text-center small">
+    {control page:btnNext}
+</div>
+
+{control page}

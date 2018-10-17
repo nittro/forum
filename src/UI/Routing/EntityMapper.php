@@ -34,7 +34,7 @@ class EntityMapper {
             $this->identifier => $identifier,
         ]);
 
-        if (!$slug) {
+        if ($this->slug && !$slug) {
             $params['action'] = 'permalink';
         }
 

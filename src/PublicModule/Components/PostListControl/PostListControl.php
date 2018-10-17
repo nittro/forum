@@ -42,6 +42,7 @@ class PostListControl extends BaseControl {
         $this->postManager = $postManager;
         $this->subscriptionManager = $subscriptionManager;
         $this->topic = $topic;
+        $this->setItemSnippetName('post');
     }
 
     protected function getResource() : AbstractLookup {
@@ -50,10 +51,6 @@ class PostListControl extends BaseControl {
 
     private function getPosts() {
         return $this->posts ?? $this->posts = $this->getPagedResource()->toArray();
-    }
-
-    public function getItemSnippetName() : string {
-        return 'post';
     }
 
 
@@ -82,15 +79,7 @@ class PostListControl extends BaseControl {
     public function render() : void {
         $this->template->topic = $this->topic;
         $this->template->posts = $this->getPosts();
-
-        $this->template->paging = [
-            'first' => !$this->paging || !$this->getComponent('page')->hasPrevious(),
-            'last' => !$this->paging || !$this->getComponent('page')->hasNext(),
-        ];
-
-        if ($this->paging) {
-            $this->getComponent('page')->setButtonLabels('load previous replies', 'load more replies');
-        }
+        $this->setupPaging($this->template, 'load previous replies', 'load more replies');
 
         if ($this->updateSubscription && $this->posts) {
             $this->subscriptionManager->markAsRead(end($this->posts));

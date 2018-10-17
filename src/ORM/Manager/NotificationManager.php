@@ -101,6 +101,12 @@ class NotificationManager {
         }
     }
 
+    public function dismissOldDisplayedNotifications() : void {
+        $this->notifications->createQuery('DELETE FROM App:Notification n WHERE n.displayed = TRUE AND n.createdOn < :until')
+            ->setParameter('until', new \DateTimeImmutable('-2 days'))
+            ->execute();
+    }
+
 
     /**
      * @param int $level

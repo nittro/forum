@@ -103,7 +103,7 @@ abstract class AbstractLookup implements \IteratorAggregate, \Countable {
     }
 
     protected function createSelectQueryBuilder() : QueryBuilder {
-        $builder = $this->createQueryBuilder();
+        $builder = $this->createCommonQueryBuilder();
 
         foreach ($this->selectModifiers as $modifier) {
             $modifier($builder);
@@ -113,8 +113,18 @@ abstract class AbstractLookup implements \IteratorAggregate, \Countable {
     }
 
     protected function createCountQueryBuilder() : QueryBuilder {
-        return $this->createQueryBuilder()
+        return $this->createCommonQueryBuilder()
             ->select(sprintf('COUNT(%s.id)', $this->alias));
+    }
+
+    protected function createCommonQueryBuilder() : QueryBuilder {
+        $builder = $this->createQueryBuilder();
+
+        foreach ($this->commonModifiers as $modifier) {
+            $modifier($builder);
+        }
+
+        return $builder;
     }
 
     protected function createQueryBuilder() : QueryBuilder {
@@ -122,10 +132,6 @@ abstract class AbstractLookup implements \IteratorAggregate, \Countable {
 
         if (!($builder instanceof QueryBuilder)) {
             throw new \RuntimeException('Invalid query builder factory, didn\'t return an instance of QueryBuilder');
-        }
-
-        foreach ($this->commonModifiers as $modifier) {
-            $modifier($builder);
         }
 
         return $builder;

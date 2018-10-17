@@ -6,6 +6,7 @@ namespace App\ORM\Manager;
 
 use App\Entity\Topic;
 use App\Entity\User;
+use App\ORM\Lookup\UserLookup;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Nette\Security\User as AppUser;
@@ -27,6 +28,11 @@ class UserManager {
         $this->entityManager = $entityManager;
         $this->currentUser = $user;
         $this->users = $entityManager->getRepository(User::class);
+    }
+
+
+    public function lookup() : UserLookup {
+        return new UserLookup([$this->users, 'createQueryBuilder']);
     }
 
 
