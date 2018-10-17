@@ -106,7 +106,7 @@ class DispatchNotificationsCommand extends Command {
                 ]);
 
                 $builder->setParam('unsubscribe', $unsubscribe);
-                $builder->setHeader('Message-ID', sprintf('<n$d.%d.%d@forum.nittro.org>', $mail->getId(), $post->getId(), $post->getTopic()->getId()));
+                $builder->setHeader('Message-ID', sprintf('<n%d.%d.%d@forum.nittro.org>', $mail->getId(), $post->getId(), $post->getTopic()->getId()));
                 $builder->setHeader('List-ID', sprintf('<t%d@forum.nittro.org>', $post->getTopic()->getId()));
                 $builder->setHeader('List-Archive', sprintf('<%s>', $this->linkGenerator->link('Public:Topic:default', ['topic' => $post->topic])));
                 $builder->setHeader('List-Unsubscribe', sprintf('<%s>', $unsubscribe));

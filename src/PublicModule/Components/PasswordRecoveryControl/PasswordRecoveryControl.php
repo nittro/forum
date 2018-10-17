@@ -36,6 +36,7 @@ class PasswordRecoveryControl extends BaseControl {
             $request = $this->passwordRequestManager->createRequest($account);
             $builder = $this->mailer->createBuilder($account->getUser(), 'passwordResetRequest');
             $builder->setParam('request', $request);
+            $builder->setHeader('Message-ID', sprintf('<p%d.%d@forum.nittro.org>', $request->getId(), $account->getId()));
             $builder->setHeader('X-Auto-Response-Suppress', 'All');
             $this->mailer->send($builder->buildMessage());
         }
