@@ -119,14 +119,15 @@ class TopicPresenter extends BasePresenter {
             ? $this->topicSubscriptionManager->getSubscription($this->topic)
             : null;
 
+        $p0 = $p;
+        $r0 = $r;
+
         if ($this->getUser()->isLoggedIn() && $at === 'unread') {
             $r = $this->topicSubscriptionManager->getFirstUnreadPost($this->topic);
         }
 
         if (isset($r)) {
             $info = $this->postManager->resolvePost($this->topic, $r);
-            $p0 = $p;
-            $r0 = $r;
 
             if ($info) {
                 $p = (int) floor($info['idx'] / self::PAGE_SIZE) + 1;
@@ -136,13 +137,14 @@ class TopicPresenter extends BasePresenter {
             } else {
                 $r = null;
             }
+        }
 
-            if ($p !== $p0 || $r !== $r0 || $this->isAjax()) {
-                $this->postGet('this', [
-                    'p' => $p > 1 ? $p : null,
-                    'r' => $this->isAjax() ? null : $r,
-                ]);
-            }
+        if ($at || $p !== $p0 || $r !== $r0) {
+            $this->postGet('this', [
+                'p' => $p > 1 ? $p : null,
+                'r' => $this->isAjax() ? null : $r,
+                'at' => null,
+            ]);
         }
     }
 
