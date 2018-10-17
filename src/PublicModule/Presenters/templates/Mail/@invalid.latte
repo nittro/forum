@@ -1,0 +1,19 @@
+{block header}
+    Unsubscribe from notifications
+{/block}
+
+{block main}
+    <div class="my-3 p-3 bg-white text-muted small rounded shadow-sm">
+        <p>
+            We're sorry, but the link you used to unsubscribe is invalid or expired.
+            We're unable to update your subscription settings using this link.
+            You can
+            {if !$user->isLoggedIn()}
+                <a n:href="User:login" data-redraw="full" data-transition=".nittro-transition-full">sign in</a>
+                and
+            {/if}
+            turn notifications off manually in the topmost part of the topic page if you wish,
+            or try a link from a different e-mail from the same topic.
+        </p>
+    </div>
+{/block}

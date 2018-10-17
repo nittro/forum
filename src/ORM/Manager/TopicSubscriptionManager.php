@@ -7,6 +7,7 @@ namespace App\ORM\Manager;
 use App\Entity\Post;
 use App\Entity\Topic;
 use App\Entity\TopicSubscription;
+use App\Entity\User;
 use Kdyby\Doctrine\Dql\Join;
 use Kdyby\Doctrine\EntityManager;
 
@@ -57,6 +58,14 @@ class TopicSubscriptionManager {
 
     public function unsubscribe(Topic $topic) : void {
         if ($subscription = $this->getSubscription($topic, false)) {
+            $subscription->setNotificationLevel(TopicSubscription::NOTIFICATIONS_OFF);
+            $this->em->persist($subscription);
+            $this->em->flush();
+        }
+    }
+
+    public function unsubscribeUser(User $user, Topic $topic) : void {
+        if ($subscription = $this->subscriptions->findOneBy(['user' => $user, 'topic' => $topic])) {
             $subscription->setNotificationLevel(TopicSubscription::NOTIFICATIONS_OFF);
             $this->em->persist($subscription);
             $this->em->flush();

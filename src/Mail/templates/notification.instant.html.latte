@@ -1,6 +1,6 @@
-{extends '@layout.latte'}
+{extends '@layout.html.latte'}
 
-{block subject}New reply to a subscribed topic at Nittro Forums{/block}
+{block subject}New reply in '{$post->topic->title}' (#{$post->topic->id}){/block}
 
 {block content}
     <p>Hello @{$user->login},</p>
@@ -15,7 +15,8 @@
     </blockquote>
 
     <p>
-        To view the topic please click <a href="{link Public:Topic:default topic => $post->topic, r => $post->id}">here</a>.
+        To view the topic please click <a href="{link Public:Topic:default topic => $post->topic, r => $post->id}">here</a>.<br />
+        To unsubscribe from further notifications in this topic please click <a href="{$unsubscribe}">here</a>.
     </p>
 
     <p>

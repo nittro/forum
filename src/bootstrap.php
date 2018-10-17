@@ -18,7 +18,7 @@ if (!Kdyby\Console\DI\BootstrapHelper::setupMode($configurator)) {
 $rootDir = dirname(__DIR__);
 
 $configurator->enableTracy($rootDir . '/var/log');
-$configurator->setTimeZone('Europe/Prague');
+$configurator->setTimeZone('UTC');
 $configurator->setTempDirectory($rootDir . '/var');
 
 $configurator->addParameters([

@@ -34,11 +34,10 @@ class PasswordRecoveryControl extends BaseControl {
 
         if ($account) {
             $request = $this->passwordRequestManager->createRequest($account);
-
-            $this->mailer->send($account->getUser(), 'passwordResetRequest', [
-                'user' => $account->getUser(),
-                'request' => $request,
-            ]);
+            $builder = $this->mailer->createBuilder($account->getUser(), 'passwordResetRequest');
+            $builder->setParam('request', $request);
+            $builder->setHeader('X-Auto-Response-Suppress', 'All');
+            $this->mailer->send($builder->buildMessage());
         }
 
         $this->postGet('this');

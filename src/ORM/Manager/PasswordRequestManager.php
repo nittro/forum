@@ -46,7 +46,7 @@ class PasswordRequestManager {
 
 
     private function generateToken() : string {
-        return Random::generate(32, '0-9a-zA-Z./');
+        return Random::generate(32, '0-9a-zA-Z.');
     }
 
 }
