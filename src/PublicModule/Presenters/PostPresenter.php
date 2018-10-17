@@ -12,8 +12,6 @@ use App\PublicModule\Components\PostEditorControl\PostEditorControl;
 
 class PostPresenter extends BasePresenter {
 
-    private $postManager;
-
     private $postEditorControlFactory;
 
 

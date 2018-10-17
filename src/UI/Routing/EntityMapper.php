@@ -27,23 +27,33 @@ class EntityMapper {
 
     public function filterIn(array $params) : array {
         $identifier = $params[$this->identifier];
+        $slug = $params['slug'] ?? null;
         unset($params[$this->identifier], $params['slug']);
 
         $params[$this->param] = $this->repository->findOneBy([
             $this->identifier => $identifier,
         ]);
 
+        if (!$slug) {
+            $params['action'] = 'permalink';
+        }
+
         return $params;
     }
 
     public function filterOut(array $params) : array {
         $entity = $params[$this->param] ?? null;
+        $action = $params['action'] ?? 'default';
         $method = 'get' . ucfirst($this->identifier);
         $params[$this->identifier] = $entity ? $entity->$method() : null;
         unset($params[$this->param]);
 
-        if ($entity && $this->slug) {
+        if ($entity && $this->slug && $action !== 'permalink') {
             $params['slug'] = $entity->getSlug();
+        }
+
+        if ($action === 'permalink') {
+            $params['action'] = 'default';
         }
 
         return $params;

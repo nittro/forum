@@ -23,7 +23,7 @@ php:
 
 
 application:
-    errorPresenter: Error
+    errorPresenter: Public:Error
     catchExceptions: %productionMode%
     mapping:
         *: App\*Module\Presenters\*Presenter

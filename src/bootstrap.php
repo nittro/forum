@@ -8,7 +8,11 @@ require __DIR__ . '/../vendor/autoload.php';
 $configurator = new Nette\Configurator;
 
 if (!Kdyby\Console\DI\BootstrapHelper::setupMode($configurator)) {
-    $configurator->setDebugMode(PHP_SAPI === 'cli-server');
+    if ($env = getenv('APP_ENV')) {
+        $configurator->setDebugMode($env !== 'prod');
+    } else {
+        $configurator->setDebugMode(PHP_SAPI === 'cli-server');
+    }
 }
 
 $rootDir = dirname(__DIR__);

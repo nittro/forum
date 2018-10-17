@@ -45,11 +45,12 @@ class CategoryPresenter extends BasePresenter {
     }
 
 
-    public function actionDefault(Category $category) : void { /* noop */ }
-    public function actionPermalink(Category $category) : void { /* noop */ }
+    public function actionPermalink(Category $category) : void {
+        $this->redirectPermanent('default', [$category]);
+    }
 
 
-    public function renderDefault() : void {
+    public function renderDefault(Category $category) : void {
         $this->template->category = $this->category;
 
         if ($this->isAjax() && empty($this->payload->postGet)) {

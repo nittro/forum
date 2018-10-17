@@ -86,8 +86,9 @@ class TopicPresenter extends BasePresenter {
     }
 
 
-    public function actionDefault(Topic $topic) : void { /* noop */ }
-    public function actionPermalink(Topic $topic) : void { /* noop */ }
+    public function actionPermalink(Topic $topic) : void {
+        $this->redirectPermanent('default', [$topic]);
+    }
 
     public function actionNew(int $category) : void {
         try {
@@ -112,7 +113,7 @@ class TopicPresenter extends BasePresenter {
     }
 
 
-    public function renderDefault(int $p = 1, ?int $r = null, ?string $at = null) : void {
+    public function renderDefault(Topic $topic, int $p = 1, ?int $r = null, ?string $at = null) : void {
         $this->template->topic = $this->topic;
         $this->template->subscription = $this->getUser()->isLoggedIn()
             ? $this->topicSubscriptionManager->getSubscription($this->topic)
