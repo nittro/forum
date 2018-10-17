@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -eux
+
+mkdir -p public/js public/css public/fonts var/cache var/log var/sessions
+
+npm ci
+composer install --no-suggest --no-progress --ignore-platform-reqs
+node_modules/.bin/gulp
+
+chmod -R go-rwx .
+chmod g+rx .
+chmod -R g+rX ./public

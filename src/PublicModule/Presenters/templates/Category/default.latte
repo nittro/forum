@@ -1,0 +1,30 @@
+{block headerPrefix}
+    <span class="mr-1">{$category->parent ? '&raquo;' : '&rsaquo;' |noescape}</span>
+{/block}
+{block header}
+    {$category->name}
+{/block}
+
+{block main}
+    <div class="d-flex flex-wrap align-items-baseline my-3 p-3 bg-white rounded shadow-sm">
+        <div class="d-flex align-items-baseline flex-grow-1">
+            <div>
+                {$category->description|noescape}
+            </div>
+            <a role="button" class="toggler d-lg-none ml-auto shift-r" data-toggle="class" data-target="{snippet.id #submenu}"></a>
+        </div>
+
+        <ul id="{snippet.id submenu}" class="collapsible-menu col-12 col-lg-auto ml-lg-auto px-0 pt-2 pt-lg-0 small">
+            <li n:if="$user->isLoggedIn()">
+                <a n:href="Topic:new category => $category->getId()">new topic</a>
+            </li>
+            <li>
+                <a n:href="//Category:permalink $category">permanent link</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+        {control topics}
+    </div>
+{/block}

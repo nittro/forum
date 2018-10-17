@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, shrink-to-fit=no" />
+
+        <title>{$title}</title>
+
+        <script type="application/javascript">window._stack = [];</script>
+        <link rel="stylesheet" type="text/css" href="{$basePath}/css/public.min.css" />
+    </head>
+    <body class="d-flex flex-column bg-light">
+        <script type="application/javascript" src="{$basePath}/js/public.min.js" async defer></script>
+        <script type="application/javascript">/mac|ipad|iphone|ipod/i.test(navigator.platform) && document.body.classList.add('mac');</script>
+
+        <header n:snippet="header" class="header navbar d-flex flex-nowrap align-items-start justify-content-start text-white-50 bg-nittro shadow-sm nittro-transition-bar nittro-transition-auto nittro-transition-full">
+            <a n:href="Home:" data-redraw="full" class="mr-1 fixed-sticky">
+                <img src="{$basePath}/images/logo.svg" class="header-logo" width="48" alt="N" />
+                <span class="sr-only">Forum home</span>
+            </a>
+            <span class="header-py fixed-sticky">
+                {block headerPrefix}{/block}
+            </span>
+            <h1 class="header-content header-py ml-1">
+                {block header}{/block}
+            </h1>
+        </header>
+
+        <main role="main" class="main mx-auto">
+            <div n:flashes></div>
+
+            <div n:snippet="content" class="nittro-transition-fade nittro-transition-full">
+                {block content}
+                    <div class="row">
+                        <div n:snippet="main" class="col col-md-8 col-lg-9 mr-md-auto nittro-transition-auto nittro-transition-fade">
+                            {block main}{/block}
+                        </div>
+                        <div n:snippet="sidebar" class="sidebar col-11 col-md-4 col-lg-3">
+                            {control userPanel}
+                            {control categoryList}
+
+                            {block sidebar}{/block}
+
+                            {if $user->isLoggedIn()}
+                                {control notifications}
+                            {/if}
+                        </div>
+                    </div>
+                {/block}
+            </div>
+        </main>
+
+        <footer class="mt-auto text-center text-muted">
+            <small>
+                &copy; {date('Y')} jahudka |
+                <a n:href="Home:privacy" class="text-muted" data-redraw="full" data-transition=".nittro-transition-full">privacy</a>
+            </small>
+        </footer>
+
+        <a role="button" class="sidebar-toggle toggler text-white-50 px-3 d-md-none" data-toggle="class" data-target="body" data-class="sidebar-visible">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+    </body>
+</html>

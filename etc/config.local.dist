@@ -1,0 +1,23 @@
+parameters:
+    autoSubscribedCategories: [1]
+
+console:
+    url: http://localhost:8000
+
+doctrine:
+    host: localhost
+    user:
+    password:
+    dbname:
+
+mail:
+    smtp: off
+
+tracy:
+    bar:
+        - Nextras\MailPanel\MailPanel(%tempDir%/mail-panel-latte)
+
+services:
+    nette.mailer:
+            class: Nette\Mail\IMailer
+            factory: Nextras\MailPanel\FileMailer(%tempDir%/mail-panel-mails)

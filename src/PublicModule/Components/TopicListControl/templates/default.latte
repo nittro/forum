@@ -1,0 +1,35 @@
+<div n:if="!$paging['first']" class="text-center small pb-3">
+    {control page:btnPrevious}
+</div>
+
+<div n:snippet="list" n:dynamic="topic-\d+" data-dynamic-element="div.media.align-items-center.py-3.border-bottom.text-muted" class="nittro-snippet-container border-top">
+    {foreach $topics as $topic}
+        <div n:snippet="topic-$topic->id" class="media align-items-center py-3 border-bottom text-muted">
+            <img alt="@{$topic->author->login}" class="avatar mr-2 rounded" src="{$topic->author|avatar:icon}" />
+            <p class="media-body small">
+                <a href="{plink Topic: topic => $topic, at => !empty($unreadCounts[$topic->id]) ? unread}" class="topic-link d-block">{$topic->title}</a>
+                <small>
+                    Created
+                    by
+                    <a href="{plink Profile: $topic->author}" class="profile-link" title="{$topic->author->name}">@{$topic->author->login}</a>
+                    <time n:datetime="$topic->createdOn" />
+                    {if !empty($replyCounts[$topic->id])}
+                        |
+                        <strong>{$replyCounts[$topic->id]}</strong> {$replyCounts[$topic->id] > 1 ? 'replies' : 'reply'},
+                        {if !empty($unreadCounts[$topic->id])}
+                            <strong>{$unreadCounts[$topic->id]}</strong> unread,
+                        {/if}
+                        last by <a href="{plink Profile: $topic->lastPost->author}" class="profile-link" title="{$topic->lastPost->author->name}">@{$topic->lastPost->author->login}</a>
+                        <time n:datetime="$topic->lastPost->postedOn" />
+                    {/if}
+                </small>
+            </p>
+        </div>
+    {/foreach}
+</div>
+
+<div n:if="!$paging['last']" class="pt-3 text-center small">
+    {control page:btnNext}
+</div>
+
+{control page}

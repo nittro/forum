@@ -1,0 +1,88 @@
+extensions:
+    factories: App\DI\AppExtension(%srcDir%)
+    console: Kdyby\Console\DI\ConsoleExtension
+    annotations: Kdyby\Annotations\DI\AnnotationsExtension
+    doctrine: Kdyby\Doctrine\DI\OrmExtension
+    events: Kdyby\Events\DI\EventsExtension
+    nittro: Nittro\Bridges\NittroDI\NittroExtension
+
+parameters:
+    avatars:
+        storagePath: %wwwDir%/static/avatars
+        baseUrl: /static/avatars
+        default: /images/user.svg
+
+    mail:
+        from: noreply@nittro.org
+        returnPath: postmaster@nittro.org
+
+    autoSubscribedCategories: [1]
+
+php:
+    date.timezone: UTC
+
+
+application:
+    errorPresenter: Error
+    catchExceptions: %productionMode%
+    mapping:
+        *: App\*Module\Presenters\*Presenter
+    scanDirs: no
+    debugger: on
+
+console:
+    name: 'Nittro Forums'
+    application: false
+    fakeHttp: true
+    url: http://localhost:8000
+
+doctrine:
+    host:
+    user:
+    password:
+    charset: UTF8
+    driver: pdo_mysql
+    dbname:
+    metadata:
+        App\Entity: %srcDir%/Entity
+    namespaceAlias:
+        App: App\Entity
+
+annotations:
+    debug: yes
+
+mail:
+    smtp: off
+
+session:
+    autoStart: smart
+    expiration: +1 month
+    savePath: %tempDir%/sessions
+    debugger: on
+
+latte:
+    macros:
+        - App\UI\Latte\Macros
+
+services:
+    - App\Security\DoctrineIdentityProvider
+    - App\Security\SimpleAuthenticator
+    - App\Parsedown\Parsedown
+    - App\ORM\Processor\PostProcessor(baseUrl: '?->getUrl()->getBaseUrl()'(@Nette\Http\IRequest))
+    - GuzzleHttp\Client
+    - App\Security\PrivilegeElevationManager(session: @session::getSection('App.Security/privileges'))
+    - App\ORM\Manager\CategoryManager(autoSubscribed: %autoSubscribedCategories%)
+    - App\ORM\Manager\AvatarManager(storagePath: %avatars.storagePath%, baseUrl: %avatars.baseUrl%, default: %avatars.default%)
+    - App\Mail\Mailer(sender: %mail.from%, returnPath: %mail.returnPath%)
+    - App\UI\Latte\Filters
+    - App\UI\Routing\RouterFactory
+
+    routing.router:
+        factory: @App\UI\Routing\RouterFactory::createRouter
+
+    latte.latteFactory:
+        alteration: true
+        setup:
+            - addFilter('removeMdQuotes', [@App\UI\Latte\Filters, removeMdQuotes])
+            - addFilter('formatDate', [@App\UI\Latte\Filters, formatDate])
+            - addFilter('avatar', [@App\UI\Latte\Filters, getAvatarUrl])

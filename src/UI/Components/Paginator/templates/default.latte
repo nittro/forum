@@ -1,0 +1,85 @@
+<script id="{snippet.id init}" type="application/javascript">
+    _stack.push([function (di, DOM, Url) {
+        var paginator = null;
+
+        di.getService('page').getSnippet({snippet.id init})
+            .setup(function () {
+                var container = document.getElementById({$containerSnippetId}),
+                    classes = DOM.getData(container, 'dynamic-element', 'div').split(/\./g),
+                    elem = classes.shift(),
+                    btns = DOM.getByClassName({snippet.id btn}),
+                    url = Url.from({plink this});
+
+                classes = classes.join(' ');
+
+                DOM.addListener(btns, 'click', function (evt) {
+                    evt.preventDefault();
+
+                    {if $hide}
+                    var hide = btns.map(function(btn) {
+                        return {if $hide === 'parent'}btn.parentNode{else}DOM.closest(btn, null, {$hide}){/if};
+                    });
+
+                    var dy = null;
+
+                    btns.some(function(btn, i) {
+                        if (btn.hasAttribute('data-previous')) {
+                            dy = hide[i] ? -hide[i].getBoundingClientRect().height : null;
+                            return true;
+                        }
+                    });
+
+                    if (dy) {
+                        dy += window.pageYOffset;
+                    }
+
+                    hide.forEach(function (elem) {
+                        elem.hidden = true;
+                    });
+
+                    if (dy) {
+                        window.scrollTo(0, dy);
+                    }
+                    {/if}
+
+                    init();
+                });
+
+                function init() {
+                    paginator = di.create('paginator', {
+                        options: {
+                            container: container,
+                            pageSize: {$pageSize},
+                            pageCount: {$pageCount},
+                            currentPage: {$page},
+                            history: function (page) {
+                                url.setParam('p', page > 1 ? page : null);
+                                return url.toAbsolute();
+                            },
+                            url: {link load! 999|replace:'999':'%page%'},
+                            responseProcessor: function(response) {
+                                var payload = response.getPayload(),
+                                    snippets = payload.snippets,
+                                    order = payload.order,
+                                    prefix = {$itemSnippetId . '-'};
+
+                                return order.map(function(id) {
+                                    return '<' + elem + ' id="' + prefix + id + '" class="' + classes + '">' + snippets[prefix + id] + '</' + elem + '>';
+                                });
+                            }
+                        }
+                    });
+
+                    paginator._.previousLock = null;
+                    paginator._handleScroll();
+                }
+            })
+            .teardown(function () {
+                paginator && paginator.destroy();
+                paginator = null;
+            });
+    }, {
+        DOM: 'Utils.DOM',
+        Url: 'Utils.Url'
+    }]);
+</script>

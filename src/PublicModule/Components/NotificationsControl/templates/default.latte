@@ -1,0 +1,160 @@
+<div id="{snippet.id list}" class="notifications"></div>
+
+<script type="application/javascript">
+    _stack.push([function (di, DOM, CSSTransitions) {
+        var active = true,
+            tmr = null;
+
+        di.getService('page').getSnippet({snippet.id list})
+            .setup(function (elem) {
+                var next = Date.now(),
+                    since = null;
+
+                refresh();
+
+                DOM.addListener(elem, 'click', function (evt) {
+                    var notification = DOM.closest(evt.target, null, 'notification');
+
+                    if (notification) {
+                        di.getService('ajax').get({plink Notifications:dismiss}, { id: DOM.getData(notification, 'id') });
+
+                        updateGem({ length: -1 });
+
+                        CSSTransitions.run(notification, {
+                            add: 'nittro-transition-active nittro-transition-out',
+                            after: 'nittro-transition-middle'
+                        }).then(function () {
+                            notification.parentNode.removeChild(notification);
+                        });
+                    }
+                });
+
+
+                function refresh() {
+                    di.getService('ajax').get({plink Notifications:}, { since: since })
+                        .then(handleResponse)
+                        .then(updateGem)
+                        .then(render)
+                        .then(display)
+                        .then(scheduleNext, handleError);
+
+                    init = false;
+                }
+
+                function handleResponse (response) {
+                    if (response.getStatus() === 204) {
+                        throw new Continue();
+                    }
+
+                    var payload = response.getPayload();
+
+                    if (Array.isArray(payload)) {
+                        payload.length && (since = payload[payload.length - 1].id);
+                        return payload;
+                    } else {
+                        throw new Error();
+                    }
+                }
+
+                function render(notifications) {
+                    notifications = notifications.map(renderNotification);
+                    DOM.append(elem, notifications);
+                    return notifications;
+                }
+
+                function updateGem (notifications) {
+                    var count = elem.querySelectorAll('.notification').length + notifications.length;
+
+                    if (count) {
+                        document.querySelector('.sidebar-toggle').setAttribute('data-notifications', count);
+                    } else {
+                        document.querySelector('.sidebar-toggle').removeAttribute('data-notifications');
+                    }
+
+                    return notifications;
+                }
+
+                function display (notifications) {
+                    return CSSTransitions.run(notifications, {
+                        add: 'nittro-transition-active nittro-transition-in',
+                        remove: 'nittro-transition-middle'
+                    }, true);
+                }
+
+                function scheduleNext() {
+                    if (active) {
+                        var now = Date.now();
+                        next += 15000;
+
+                        if (next <= now) {
+                            next = now + 15000;
+                        }
+
+                        tmr = window.setTimeout(dispatch, next - now);
+                    }
+                }
+
+                function handleError (err) {
+                    err instanceof Continue && scheduleNext();
+                }
+
+                function dispatch() {
+                    // this should break the notification loop
+                    // if the browser window is inactive
+                    window.requestAnimationFrame(refresh);
+                }
+
+                function Continue () { }
+
+                function renderNotification(notification) {
+                    var holder = DOM.create('div', {
+                        'class': 'notification my-3 rounded shadow-sm small nittro-transition-slide nittro-transition-middle',
+                        'data-id': notification.id,
+                    });
+
+                    var tmp = DOM.create('button', {
+                        type: 'button',
+                        'class': 'close mr-1'
+                    });
+
+                    tmp.innerHTML = '&times;';
+                    holder.appendChild(tmp);
+
+                    var elem = DOM.create('a', {
+                        href: notification.url,
+                        'class': 'd-block p-3',
+                    });
+
+                    holder.appendChild(elem);
+
+                    tmp = DOM.create('strong', {
+                        title: notification.author_name
+                    });
+
+                    tmp.textContent = '@' + notification.author_login;
+                    elem.appendChild(tmp);
+
+                    if (notification.first) {
+                        elem.appendChild(document.createTextNode(' created a new topic in '));
+                        tmp = DOM.create('strong');
+                        tmp.textContent = notification.category_name;
+                        elem.appendChild(tmp);
+                    } else {
+                        elem.appendChild(document.createTextNode(' posted a new reply in '));
+                        tmp = DOM.create('strong');
+                        tmp.textContent = notification.topic_title;
+                        elem.appendChild(tmp);
+                    }
+
+                    return holder;
+                }
+            })
+            .teardown(function () {
+                tmr = tmr && window.clearTimeout(tmr);
+                active = false;
+            });
+    }, {
+        DOM: 'Utils.DOM',
+        CSSTransitions: 'Utils.CSSTransitions'
+    }]);
+</script>

@@ -1,0 +1,166 @@
+.nittro-transition-dim {
+    &:before {
+        background: rgba(255, 255, 255, 0.8);
+    }
+}
+
+.nittro-flash {
+    position: relative;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    transition: transform 300ms, opacity 300ms;
+
+    &.nittro-flash-info {
+        color: #004085;
+        background-color: #cce5ff;
+        border-color: #b8daff;
+
+        &:before {
+            border-color: #b8daff;
+        }
+    }
+
+    &.nittro-flash-warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+
+        &:before {
+            border-color: #ffeeba;
+        }
+    }
+
+    &.nittro-flash-error {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+
+        &:before {
+            border-color: #f5c6cb;
+        }
+    }
+
+    &.nittro-flash-inline {
+        padding: .75rem 1.25rem;
+
+        &.nittro-flash-prepare {
+            transform: translateX(5px);
+        }
+
+        &.nittro-flash-hide {
+            transform: translateX(-5px);
+        }
+
+        & + .nittro-flash-inline {
+            margin-top: 1rem;
+        }
+    }
+
+    &.nittro-flash-floating {
+        max-width: 300px;
+        padding: .75rem 1.25rem;
+        text-align: center;
+
+        &:before {
+            position: absolute;
+            content: '';
+            width: 0;
+            height: 0;
+            border-width: 5px;
+            border-style: solid;
+            border-left-color: transparent;
+            border-bottom-color: transparent;
+            transform-origin: center center;
+        }
+    }
+}
+
+.nittro-flash-global-holder {
+    z-index: 1070;
+
+    .nittro-flash {
+        margin-top: 1rem;
+        padding: .75rem 1.25rem;
+
+        &.nittro-flash-prepare {
+            transform: translateX(5px);
+        }
+
+        &.nittro-flash-hide {
+            transform: translateX(-5px);
+        }
+    }
+}
+
+.nittro-dialog-holder .nittro-dialog-inner {
+    border-radius: 0 0 0.25rem 0.25rem;
+
+    .nittro-dialog-content {
+        padding: 1rem 2rem;
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .nittro-dialog-buttons {
+        padding: 0 2rem 1rem;
+    }
+}
+
+.nittro-dialog-button {
+    display: inline-block;
+    margin: 0 0.25rem;
+    padding: .375rem .75rem;
+    border: 1px solid #007bff;
+    border-radius: .25rem;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #fff;
+    background-color: #007bff;
+    user-select: none;
+    cursor: pointer;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+    &:hover {
+        color: #fff;
+        background-color: #0069d9;
+        border-color: #0062cc
+    }
+
+    &:focus, &:hover {
+        text-decoration: none;
+    }
+
+    &.nittro-dialog-button-text {
+        font-weight: 400;
+        color: #007bff;
+        background-color: transparent;
+        border-color: transparent;
+
+        &:hover {
+            color: #0056b3;
+            text-decoration: underline;
+            background-color: transparent;
+        }
+    }
+}
+
+.form-invalid-feedback {
+    display: block;
+    font-size: 90%;
+
+    p.error:last-child {
+        margin-bottom: 1rem;
+    }
+}
+
+.invalid-feedback p.error {
+    margin: 0;
+}

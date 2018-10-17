@@ -1,0 +1,16 @@
+<div n:snippet="setting" class="custom-control custom-checkbox custom-control-inline fix mr-0 nittro-transition-fade nittro-transition-fade-half">
+    <input type="checkbox" id="{snippet.id on}" class="custom-control-input" n:attr="checked => $subscribed" />
+    <label for="{snippet.id on}" class="custom-control-label">notifications</label>
+    <script type="application/javascript">
+        _stack.push([function (di, DOM) {
+            DOM.addListener({snippet.id on}, 'change', function () {
+                di.getService('page').open({link toggle! on => (int) !$subscribed}, null, null, {
+                    transition: {snippet.id #setting},
+                    history: false
+                });
+            });
+        }, {
+            DOM: 'Utils.DOM'
+        }]);
+    </script>
+</div>

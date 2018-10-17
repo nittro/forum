@@ -1,0 +1,89 @@
+<div n:snippet="form" class="nittro-transition-fade nittro-transition-fade-half mt-3">
+    <form n:name="form" data-reset="false" data-redraw="full" data-transition="{snippet.id #form}" class="row">
+        <div class="col-sm-6 col-lg-4 ml-lg-auto">
+            <h3>Account</h3>
+
+            <div class="form-group">
+                <label n:name="login">Login:</label>
+                <input n:name="login" n:class="$form['login']->hasErrors() ? is-invalid, form-control" />
+                <div n:errors="login" class="invalid-feedback"></div>
+                <small class="form-text text-muted">
+                    Only letters, numbers and dots or underscores allowed (although it may not start or end with those).
+                </small>
+            </div>
+            <div class="form-group">
+                <label n:name="password">Password:</label>
+                <input n:name="password" n:class="$form['password']->hasErrors() ? is-invalid, form-control" />
+                <div n:errors="password" class="invalid-feedback"></div>
+                <small class="form-text text-muted">
+                    Min. 8 characters including at least 3 of the following:
+                    lowercase letters, uppercase letters, numbers, special characters (!, %, # etc.).
+                </small>
+            </div>
+            <div class="form-group">
+                <label n:name="password_check">Verify password:</label>
+                <input n:name="password_check" n:class="$form['password_check']->hasErrors() ? is-invalid, form-control" />
+                <div n:errors="password_check" class="invalid-feedback"></div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 mr-lg-auto">
+            <h3>Profile</h3>
+
+            <div class="form-group">
+                <label n:name="email">E-mail:</label>
+                <input n:name="email" n:class="$form['email']->hasErrors() ? is-invalid, form-control" />
+                <div n:errors="email" class="invalid-feedback"></div>
+            </div>
+
+            <div class="form-group">
+                <label n:name="name">Full name:</label>
+                <input n:name="name" n:class="$form['name']->hasErrors() ? is-invalid, form-control" />
+                <div n:errors="name" class="invalid-feedback"></div>
+            </div>
+
+            <div class="form-group">
+                <label n:name="avatar">Avatar (optional):</label>
+                <div class="custom-file">
+                    <input n:name="avatar" n:class="$form['avatar']->hasErrors() ? is-invalid, custom-file-input" />
+                    <label for="{input.id avatar}" class="custom-file-label">Choose file...</label>
+                </div>
+                <div n:errors="avatar" class="invalid-feedback"></div>
+                <small class="form-text text-muted">
+                    JPEG, PNG or GIF images up to 2MB are accepted. At least 128x128 pixels large if you want it to look nice
+                    (although this is not required).
+                </small>
+            </div>
+
+            <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                    <input n:name="subscribe_mentions" class="custom-control-input" />
+                    <label n:name="subscribe_mentions" class="custom-control-label">
+                        Notify me when I'm <strong>@mentioned</strong>
+                    </label>
+                </div>
+            </div>
+
+            <div n:if="$autoSubscribed" class="form-group">
+                <div class="custom-control custom-checkbox">
+                    <input n:name="subscribe_auto_categories" class="custom-control-input" />
+                    <label n:name="subscribe_auto_categories" class="custom-control-label">
+                        Notify me about new topics in
+                        {foreach $autoSubscribed as $c}{$iterator->first ? '' : ($iterator->last ? ' and ' : ', ')}{$c->name}{/foreach}
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 mx-auto my-2 text-center">
+            <p class="small">
+                By signing up for an account at Nittro Forums you consent to our use of cookies
+                as well as the storage and processing of your personal data as described
+                in our <a href="{plink Home:privacy}" data-redraw="full" data-transition=".nittro-transition-full">privacy policy</a>.
+            </p>
+        </div>
+
+        <div class="col-12 my-4 text-center">
+            <button n:name="register" class="btn btn-lg btn-primary">Sign me up!</button>
+        </div>
+    </form>
+</div>

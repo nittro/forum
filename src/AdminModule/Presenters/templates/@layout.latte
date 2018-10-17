@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, shrink-to-fit=no" />
+
+        <title>Admin</title>
+
+        <script type="application/javascript">window._stack = [];</script>
+        <link rel="stylesheet" type="text/css" href="{$basePath}/css/admin.min.css" />
+        <script type="application/javascript" src="{$basePath}/js/admin.min.js" async defer></script>
+    </head>
+    <body n:class="$module" data-class-source="module">
+        <nav class="navbar navbar-dark fixed-top bg-dark flex-nowrap p-0 shadow">
+            <a n:href="Dashboard:" class="navbar-brand col-md-3 col-lg-2 col mr-0">Admin</a>
+
+            <ul class="navbar-nav">
+                <li class="nav-item text-nowrap d-none d-md-block">
+                    <a n:href=":Public:Home:" data-ajax="false" class="nav-link px-3">Go to forum</a>
+                </li>
+                <li class="nav-item sidebar-toggle d-md-none">
+                    <a role="button" class="nav-link px-3 py-0" data-toggle="class" data-target=".sidebar" data-class="sidebar-visible">&vellip;</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div role="main" class="container-fluid">
+            <div class="row">
+                <nav class="col-11 col-md-3 col-lg-2 bg-light sidebar">
+                    <div class="sidebar-sticky">
+                        <ul class="nav flex-column" data-class-source="module" data-class-target="module">
+                            <li class="nav-item">
+                                <a n:href="Dashboard:" data-module="dashboard" n:class="$module === 'dashboard' ? active, nav-link">
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item d-md-none">
+                                <a n:href=":Public:Home:" data-ajax="false" class="nav-link">
+                                    Sign out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <main role="main" class="main col-md-9 ml-sm-auto col-lg-10 px-4">
+                    <div n:snippet="header" class="main-header d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        {block header}{/block}
+                    </div>
+
+                    <div n:flashes></div>
+
+                    <div n:snippet="content" class="nittro-transition-auto nittro-transition-fade">
+                        {block content}{/block}
+                    </div>
+                </main>
+            </div>
+        </div>
+    </body>
+</html>

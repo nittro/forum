@@ -1,0 +1,117 @@
+body {
+    font-size: .875rem;
+}
+
+.navbar {
+    transition: transform 0.4s;
+
+    .navbar-brand {
+        padding-top: .75rem;
+        padding-bottom: .75rem;
+        font-size: 1rem;
+        background-color: rgba(0, 0, 0, .25);
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+    }
+
+    .sidebar-toggle a {
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+}
+
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100; /* Behind the navbar */
+    padding: 48px 0 0; /* Height of navbar */
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    transform: translateX(-100%);
+    transition: transform 0.4s;
+
+    &.sidebar-visible {
+        transform: translateX(0);
+    }
+
+    .nav-link {
+        font-weight: 500;
+        color: #333;
+
+        .feather {
+            margin-right: 4px;
+            color: #999;
+        }
+
+        &.active {
+            color: #007bff;
+        }
+
+        &:hover .feather,
+        &.active .feather {
+            color: inherit;
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}
+
+@supports ((position: -webkit-sticky) or (position: sticky)) {
+    .sidebar-sticky {
+        position: -webkit-sticky;
+        position: sticky;
+    }
+}
+
+.sidebar-heading {
+    font-size: .75rem;
+    text-transform: uppercase;
+}
+
+
+.main {
+    padding-top: 48px;
+}
+
+
+body.login {
+    height: 100vh;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #f5f5f5;
+
+    .navbar.fixed-top {
+        transform: translateY(-150%);
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .main {
+        padding-top: 0;
+        margin-right: auto;
+    }
+
+    .main-header {
+        display: none !important;
+    }
+}

@@ -1,0 +1,15 @@
+{block header}
+    Welcome to Nittro Forums!
+{/block}
+
+{block main}
+    <div n:if="$showUnread" class="my-3 p-3 bg-white rounded shadow-sm">
+        <h2 class="h6 pb-2 mb-0">Unread replies in topics you follow</h2>
+        {control unread}
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+        <h2 class="h6 pb-2 mb-0">Recently active topics</h2>
+        {control recent}
+    </div>
+{/block}

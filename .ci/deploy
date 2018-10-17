@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -eux
+
+RELEASES_DIR="$DEPLOY_PATH/releases"
+TARGET_DIR_VERSIONED="$RELEASES_DIR/$BUILD_ID"
+TARGET_DIR_AUTHORITATIVE="$DEPLOY_PATH/current"
+SHARED_DIR="$DEPLOY_PATH/shared"
+
+rsync -rzpEl -e "ssh -i '$DEPLOY_KEY_PATH'" --exclude=.git --exclude=.ci ./ "$DEPLOY_USER@$DEPLOY_SERVER:$TARGET_DIR_VERSIONED"
+
+ssh -T -i "$DEPLOY_KEY_PATH" "$DEPLOY_USER@$DEPLOY_SERVER" << EOT
+set -eux
+
+rm -rf "$TARGET_DIR_VERSIONED/var/log"
+rm -rf "$TARGET_DIR_VERSIONED/var/sessions"
+rm -rf "$TARGET_DIR_VERSIONED/public/static"
+rm -f "$TARGET_DIR_VERSIONED/etc/config.local.neon"
+
+ln -sfnT "$SHARED_DIR/var/log" "$TARGET_DIR_VERSIONED/var/log"
+ln -sfnT "$SHARED_DIR/var/sessions" "$TARGET_DIR_VERSIONED/var/sessions"
+ln -sfnT "$SHARED_DIR/public/static" "$TARGET_DIR_VERSIONED/public/static"
+ln -sfnT "$SHARED_DIR/etc/config.local.neon" "$TARGET_DIR_VERSIONED/etc/config.local.neon"
+
+ln -sfnT "$TARGET_DIR_VERSIONED" "$TARGET_DIR_AUTHORITATIVE.new"
+mv -fT "$TARGET_DIR_AUTHORITATIVE.new" "$TARGET_DIR_AUTHORITATIVE"
+
+cachetool opcache:reset --fcgi=/run/php/forum.nittro.org.sock
+
+ls -1v "$RELEASES_DIR" | grep -E '^[0-9]+$' | head -n -5 | sed -e "s#^#$RELEASES_DIR/#" | xargs -r rm -rf
+EOT

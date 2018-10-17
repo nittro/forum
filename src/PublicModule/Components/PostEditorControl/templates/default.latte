@@ -1,0 +1,67 @@
+<div n:snippet="form" class="my-3 p-3 bg-white rounded shadow-sm nittro-transition-dim">
+    <form n:name="form" data-scroll-to="null"{if $inline} data-history="false" data-transition="#{snippet.id form}"{/if}>
+        <div class="form-group">
+            <label n:name="text">{$editing ? 'Edit post:' : 'Post a reply:'}</label>
+            <textarea n:name="text" n:class="$form['text']->hasErrors() ? is-invalid, form-control, text-monospace" rows="{$inline ? 6 : 12}" aria-describedby="{input.id text}-help"></textarea>
+            <div n:errors="text" class="invalid-feedback"></div>
+        </div>
+        <div class="form-group row align-items-center mb-0">
+            <div class="col">
+                <small id="{input.id text}-help" class="text-muted">
+                    Supports Markdown<span class="d-md-none d-lg-inline"> syntax</span>.
+                    <span class="d-none d-lg-inline"><code><span class="ctrl-key"></span>+Enter</code> to {$editing ? 'save' : 'post'}.</span>
+                </small>
+            </div>
+            {if !$editing}
+                <div class="col-12 d-sm-none"></div>
+                <div class="col col-sm-auto">
+                    <div class="custom-control custom-checkbox">
+                        <input n:name="subscribe" class="custom-control-input" />
+                        <label n:name="subscribe" class="custom-control-label">Subscribe to replies</label>
+                    </div>
+                </div>
+            {/if}
+            <div class="col-auto mx-auto">
+                <button n:name="save" class="btn btn-primary">{$editing ? 'Save changes' : 'Post reply'}</button>
+                <a n:if="$editing" href="{plink Topic:default topic => $post->topic, r => $post->id}" class="btn btn-link">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+    <script type="application/javascript">
+        _stack.push([function (di, Mention, Url) {
+            var ctrlKey = /mac|ipad|iphone|ipod/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey',
+                su = null,
+                md = null,
+                ag = null;
+
+            di.getService('page').getSnippet({input.id form-text})
+                .setup(function (inp) {
+                    su = new Mention(di.getService('ajax'), inp, function(q) {
+                        var url = Url.from({link suggestUser!}),
+                            param = {param login};
+                        return url.setParam(param, q).toAbsolute();
+                    });
+
+                    md = new MarkdownArea(inp);
+                    ag = new Autogrow(inp);
+
+                    inp.addEventListener('keydown', function (evt) {
+                        if (evt.key === 'Enter' && evt[ctrlKey]) {
+                            evt.preventDefault();
+                            inp.blur();
+                            di.getService('formLocator').getForm(inp.form).submit();
+                        }
+                    });
+                })
+                .teardown(function () {
+                    su = su && su.destroy();
+                    md = md && md.destroy();
+                    ag = ag && ag.destroy();
+                });
+        }, {
+            Mention: 'App.Mention',
+            Url: 'Utils.Url'
+        }]);
+    </script>
+</div>

@@ -1,0 +1,48 @@
+<div n:flashes class="my-3"></div>
+<div n:snippet="form" class="nittro-transition-fade nittro-transition-fade-half mb-3">
+    <form n:name="form" data-transition="{snippet.id #form}" data-scroll-to="false" data-history="false">
+        <div n:if="$requirePassword" class="form-group">
+            <label n:name="password">Password:</label>
+            <input n:name="password" n:class="$form['password']->hasErrors() ? is-invalid, form-control" />
+            <div n:errors="password" class="invalid-feedback"></div>
+        </div>
+
+        <div class="form-group">
+            <label n:name="email">E-mail:</label>
+            <input n:name="email" n:class="$form['email']->hasErrors() ? is-invalid, form-control" />
+            <div n:errors="email" class="invalid-feedback"></div>
+        </div>
+
+        <div class="form-group">
+            <label n:name="name">Full name:</label>
+            <input n:name="name" n:class="$form['name']->hasErrors() ? is-invalid, form-control" />
+            <div n:errors="name" class="invalid-feedback"></div>
+        </div>
+
+        <div class="form-group">
+            <label n:name="avatar">Avatar (optional):</label>
+            <div class="custom-file">
+                <input n:name="avatar" n:class="$form['avatar']->hasErrors() ? is-invalid, custom-file-input" />
+                <label for="{input.id avatar}" class="custom-file-label">Choose file...</label>
+            </div>
+            <div n:errors="avatar" class="invalid-feedback"></div>
+            <small class="form-text text-muted">
+                JPEG, PNG or GIF images up to 2MB are accepted. At least 128x128 pixels large if you want it to look nice
+                (although this is not required).
+            </small>
+        </div>
+
+        <div class="form-group">
+            <div class="custom-control custom-checkbox">
+                <input n:name="subscribe_mentions" class="custom-control-input" />
+                <label n:name="subscribe_mentions" class="custom-control-label">
+                    Notify me when I'm <strong>@mentioned</strong>
+                </label>
+            </div>
+        </div>
+
+        <div class="my-3">
+            <button n:name="save" class="btn btn-primary">Save settings</button>
+        </div>
+    </form>
+</div>

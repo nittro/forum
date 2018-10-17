@@ -1,0 +1,62 @@
+<div n:snippet="form" class="my-3 p-3 bg-white rounded shadow-sm nittro-transition-dim">
+    <form n:name="form">
+        <div class="form-group row">
+            <label n:name="title" class="col-sm-3 col-form-label col-form-label-lg">Title:</label>
+            <div class="col-sm-9">
+                <input n:name="title" class="form-control form-control-lg" />
+                <div n:errors="title" class="invalid-feedback"></div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label n:name="text" class="col-sm-3 col-form-label">
+                Text:
+                <small id="{input.id text}-help" class="form-text text-muted">Supports Markdown syntax</small>
+            </label>
+            <div class="col-sm-9">
+                <textarea n:name="text" n:class="$form['text']->hasErrors() ? is-invalid, form-control, text-monospace" rows="10" aria-describedby="{input.id text}-help"></textarea>
+                <div n:errors="text" class="invalid-feedback"></div>
+            </div>
+        </div>
+        <div n:if="!$topic" class="form-group row">
+            <div class="offset-sm-3 col-sm-9">
+                <div class="custom-control custom-checkbox">
+                    <input n:name="subscribe" class="custom-control-input" />
+                    <label n:name="subscribe" class="custom-control-label">Subscribe to replies</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="offset-sm-3 col-sm-9">
+                <button n:name="save" class="btn btn-primary">Create topic</button>
+                <a href="{$cancel}" class="btn btn-link">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+    <script type="application/javascript">
+        _stack.push([function (di, Mention, Url) {
+            var su = null,
+                md = null,
+                ag = null;
+
+            di.getService('page').getSnippet({input.id form-text})
+                .setup(function (inp) {
+                    su = new Mention(di.getService('ajax'), inp, function(q) {
+                        var url = Url.from({link suggestUser!}),
+                            param = {param login};
+                        return url.setParam(param, q).toAbsolute();
+                    });
+                    md = new MarkdownArea(inp);
+                    ag = new Autogrow(inp);
+                })
+                .teardown(function () {
+                    su = su && su.destroy();
+                    md = md && md.destroy();
+                    ag = ag && ag.destroy();
+                });
+        }, {
+            Mention: 'App.Mention',
+            Url: 'Utils.Url'
+        }]);
+    </script>
+</div>

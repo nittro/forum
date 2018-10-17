@@ -1,0 +1,25 @@
+{extends '@layout.latte'}
+
+{block subject}New reply to a subscribed topic at Nittro Forums{/block}
+
+{block content}
+    <p>Hello @{$user->login},</p>
+
+    <p>
+        <strong>@{$post->author->login}</strong> recently posted a new reply
+        in <strong>{$post->topic->title}</strong> at Nittro Forums:
+    </p>
+
+    <blockquote>
+        {$post->text|noescape}
+    </blockquote>
+
+    <p>
+        To view the topic please click <a href="{link Public:Topic:default topic => $post->topic, r => $post->id}">here</a>.
+    </p>
+
+    <p>
+        Have a great day,<br />
+        the Nittro Forums team
+    </p>
+{/block}

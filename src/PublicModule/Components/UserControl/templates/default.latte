@@ -1,0 +1,45 @@
+<div id="{snippet.id controls}" class="my-3 p-3 bg-white rounded shadow-sm">
+    {if $user->isLoggedIn()}
+        <div class="d-flex flex-row justify-content-between align-items-start">
+            <div>
+                <h4 n:class="!$user->identity->hasAvatar() ? w-100, sidebar-heading">{$user->identity->name}</h4>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a href="{plink User:settings}" class="nav-link small">Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{plink User:logout}" data-redraw="full" data-transition=".nittro-transition-full" class="nav-link small">Sign out</a>
+                    </li>
+                </ul>
+            </div>
+            <img n:if="$user->identity->hasAvatar()" alt="@{$user->identity->login}" class="sidebar-avatar" src="{$user->identity|avatar}" />
+        </div>
+    {else}
+        <div class="d-flex flex-row justify-content-between align-items-center">
+            <h4 class="sidebar-heading mb-0">Guest</h4>
+            <div class="small">
+                <a href="{plink User:login}" data-redraw="full" data-transition=".nittro-transition-full" class="nav-link d-inline">sign in</a>
+                <span class="text-muted">|</span>
+                <a href="{plink User:registration}" data-redraw="full" data-transition=".nittro-transition-full" class="nav-link d-inline">sign up</a>
+            </div>
+        </div>
+    {/if}
+
+    <script type="application/javascript">
+        _stack.push([function (DOM, Url) {
+            DOM.addListener({snippet.id controls}, 'click', DOM.delegate('.nav-link', function (evt, elem) {
+                var url = Url.from(elem.href),
+                    current = Url.fromCurrent();
+
+                if (current.toLocal() !== '/') {
+                    url.setParam('redir', current.toLocal());
+                }
+
+                elem.href = url.toAbsolute();
+            }));
+        }, {
+            DOM: 'Utils.DOM',
+            Url: 'Utils.Url'
+        }]);
+    </script>
+</div>

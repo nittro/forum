@@ -1,0 +1,30 @@
+<div n:flashes class="my-3"></div>
+<div n:snippet="form" class="nittro-transition-fade nittro-transition-fade-half mb-3">
+    <form n:name="form" data-transition="{snippet.id #form}" data-scroll-to="false" data-history="{json_encode($history)}">
+        <div n:if="$requireCurrent" class="form-group">
+            <label n:name="current_password">Current password:</label>
+            <input n:name="current_password" n:class="$form['current_password']->hasErrors() ? is-invalid, form-control" />
+            <div n:errors="current_password" class="invalid-feedback"></div>
+        </div>
+
+        <div class="form-group">
+            <label n:name="new_password">New password:</label>
+            <input n:name="new_password" n:class="$form['new_password']->hasErrors() ? is-invalid, form-control" />
+            <div n:errors="new_password" class="invalid-feedback"></div>
+            <small class="form-text text-muted">
+                Min. 8 characters including at least 3 of the following:
+                lowercase letters, uppercase letters, numbers, special characters (!, %, # etc.).
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label n:name="new_password_check">Verify new password:</label>
+            <input n:name="new_password_check" n:class="$form['new_password_check']->hasErrors() ? is-invalid, form-control" />
+            <div n:errors="new_password_check" class="invalid-feedback"></div>
+        </div>
+
+        <div class="my-3">
+            <button n:name="save" class="btn btn-primary">Update password</button>
+        </div>
+    </form>
+</div>

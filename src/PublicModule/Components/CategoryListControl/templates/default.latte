@@ -1,0 +1,17 @@
+<div class="my-3 p-3 bg-white rounded shadow-sm category-list">
+    <h4 class="sidebar-heading">{$rootCategory ? 'Subcategories' : 'Categories'}</h4>
+    {include #cat_list categories => $categories}
+</div>
+
+{define cat_list}
+    <ul class="nav flex-column">
+        {foreach $categories as $category}
+            <li class="nav-item">
+                <a href="{plink Category:default $category}" class="nav-link small">{$category->name}</a>
+                {if $full && count($category->subcategories)}
+                    {include #cat_list categories => $category->subcategories}
+                {/if}
+            </li>
+        {/foreach}
+    </ul>
+{/define}

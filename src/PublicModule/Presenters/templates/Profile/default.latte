@@ -1,0 +1,17 @@
+{block header}
+    @{$profile->login}
+{/block}
+
+{block main}
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+        <div class="row">
+            <div class="col-auto">
+                <img alt="@{$profile->login}" class="avatar-large" src="{$profile|avatar}" />
+            </div>
+            <div class="col-12 col-sm mt-3 mt-sm-0">
+                <h3>{$profile->name}</h3>
+                <h4 class="h6 text-muted" n:if="$profile->role">{$profile->role}</h4>
+            </div>
+        </div>
+    </div>
+{/block}

@@ -1,0 +1,13 @@
+<div n:snippet="form" class="nittro-transition-fade nittro-transition-fade-half mb-3">
+    <form n:name="form" data-transition="{snippet.id #form}" data-scroll-to="false">
+        <div class="form-group">
+            <label n:name="identifier">Login or e-mail:</label>
+            <input n:name="identifier" n:class="$form['identifier']->hasErrors() ? is-invalid, form-control" />
+            <div n:errors="identifier" class="invalid-feedback"></div>
+        </div>
+
+        <div class="my-3">
+            <button n:name="send" class="btn btn-primary">Request password reset</button>
+        </div>
+    </form>
+</div>
