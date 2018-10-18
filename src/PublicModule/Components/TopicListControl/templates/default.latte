@@ -21,7 +21,9 @@
                             <strong>{$unread}</strong> unread,
                         {/if}
                         last by <a href="{plink Profile: $topic->lastPost->author}" class="profile-link" title="{$topic->lastPost->author->name}">@{$topic->lastPost->author->login}</a>
-                        <time n:datetime="$topic->lastPost->postedOn" />
+                        <a href="{plink Topic: topic => $topic, r => $topic->lastPost->getId()}" class="muted-link">
+                            <time n:datetime="$topic->lastPost->postedOn" />
+                        </a>
                     {/if}
                 </small>
             </p>

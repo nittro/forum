@@ -11,7 +11,8 @@
             <div class="small text-muted">
                 Created by <strong>@{$topic->author->login}</strong>
                 <time n:datetime="$topic->createdOn" />
-                in {$topic->category->name}
+                in
+                <a n:href="Category: $topic->category">{$topic->category->name}</a>
             </div>
             <a role="button" class="toggler d-lg-none ml-auto py-0 shift-r" data-toggle="class" data-target="{snippet.id #submenu}"></a>
         </div>

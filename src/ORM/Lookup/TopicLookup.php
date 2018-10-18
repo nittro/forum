@@ -92,6 +92,11 @@ class TopicLookup extends AbstractLookup {
         return $this;
     }
 
+    public function withUnreadCounts(int $uid) : self {
+        $this->unreadBy = $uid;
+        return $this;
+    }
+
 
     public function getReplyCount(Topic $topic) : int {
         if (!isset($this->replyCounts)) {
@@ -111,7 +116,7 @@ class TopicLookup extends AbstractLookup {
 
     public function getUnreadReplies(Topic $topic) : int {
         if (!isset($this->unreadBy)) {
-            throw new \RuntimeException("Cannot load unread replies' counts when the unreadBy() method wasn't called");
+            throw new \RuntimeException("Call unreadBy() or withUnreadCounts() to load unread reply counts");
         } else if (!isset($this->unreadCounts)) {
             $ids = $this->extract('id');
 
