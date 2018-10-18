@@ -41,7 +41,9 @@ class Filters {
             return 'a minute ago';
         } else if ($m < 60) {
             return sprintf('%d minutes ago', $m);
-        } else if ($m <= 180) {
+        } else if ($m < 120) {
+            return 'an hour ago';
+        } else if ($m <= 239) {
             return sprintf('%d hours ago', floor($m / 60));
         } else {
             $dt = $date->format('Y-m-d');

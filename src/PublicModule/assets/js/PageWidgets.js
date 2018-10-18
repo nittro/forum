@@ -142,7 +142,9 @@ _context.invoke('App', function (DOM, Url, DateTime) {
                         t = 'a minute ago';
                     } else if (m < 60) {
                         t = m + ' minutes ago';
-                    } else if (m <= 180) {
+                    } else if (m < 120) {
+                        t = 'an hour ago';
+                    } else if (m <= 239) {
                         t = (m / 60).toFixed(0) + ' hours ago';
                     } else {
                         dt = d.format('Y-m-d');
