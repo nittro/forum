@@ -85,24 +85,12 @@ class PostProcessor {
 
     private function processEmojis(string $content) : string {
         static $re = null;
-        $lines = explode("\n", $content);
-        $code = 0;
 
         if (!isset($re)) {
-            $re = preg_replace('~\)/u$~u', '|\\s+)+/u', Emoji\_load_regexp());
+            $re = '/<[pP]>((?:' . mb_substr(Emoji\_load_regexp(), 4, -3) . '|\\s+)+)<\/[pP]>/u';
         }
 
-        foreach ($lines as &$line) {
-            if (preg_match('~<(/?)code[^>]*>~i', $line, $m)) {
-                $code += empty($m[1]) ? 1 : -1;
-            }
-
-            if (!$code && !trim(strip_tags(preg_replace($re, '', $line)))) {
-                $line = preg_replace($re, '<span class="emoji-large">$0</span>', $line);
-            }
-        }
-
-        return implode("\n", $lines);
+        return preg_replace($re, '<p class="emoji-large">$1</p>', $content);
     }
 
 
