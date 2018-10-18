@@ -22,7 +22,8 @@
         "erusev/parsedown-extra": "^0.7.1",
         "nextras/secured-links": "^1.4",
         "guzzlehttp/guzzle": "^6.3",
-        "nette/mail": "^2.4"
+        "nette/mail": "^2.4",
+        "p3k/emoji-detector": "^0.2.1"
     },
     "autoload": {
         "psr-4": {

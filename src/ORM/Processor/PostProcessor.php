@@ -14,6 +14,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ServerException;
 use Nette\Application\LinkGenerator;
+use Emoji;
 
 
 class PostProcessor {
@@ -50,9 +51,9 @@ class PostProcessor {
         $this->linkGenerator = $linkGenerator;
         $this->baseUrl = $baseUrl;
 
-        $this->parsedown->setMentionProcessor([$this, 'processMention']);
-        $this->parsedown->setLinkProcessor([$this, 'processLink']);
-        $this->parsedown->setImageProcessor([$this, 'processImage']);
+        $this->parsedown->setMentionProcessor(\Closure::fromCallable([$this, 'processMention']));
+        $this->parsedown->setLinkProcessor(\Closure::fromCallable([$this, 'processLink']));
+        $this->parsedown->setImageProcessor(\Closure::fromCallable([$this, 'processImage']));
     }
 
 
@@ -60,6 +61,7 @@ class PostProcessor {
         $mentions = $this->extractPossibleMentions($content);
         $this->users = $mentions ? $this->userManager->getByLogins($mentions) : [];
         $content = $this->parsedown->text($content);
+        $content = $this->processEmojis($content);
 
         $mentioned = array_diff_key($this->users, array_flip($this->parsedown->getParsedMentions()));
         $subscribe = array_filter($mentioned, function(User $user) : bool {
@@ -75,7 +77,36 @@ class PostProcessor {
     }
 
 
-    public function processMention(string $mention) : ?array {
+    private function extractPossibleMentions(string $text) : array {
+        preg_match_all('~(?<!\S)@([a-z0-9]+(?:[._]+[a-z0-9]+)*)~i', $text, $m);
+        return array_unique($m[1]);
+    }
+
+
+    private function processEmojis(string $content) : string {
+        static $re = null;
+        $lines = explode("\n", $content);
+        $code = 0;
+
+        if (!isset($re)) {
+            $re = preg_replace('~\)/u$~u', '|\\s+)+/u', Emoji\_load_regexp());
+        }
+
+        foreach ($lines as &$line) {
+            if (preg_match('~<(/?)code[^>]*>~i', $line, $m)) {
+                $code += empty($m[1]) ? 1 : -1;
+            }
+
+            if (!$code && !trim(strip_tags(preg_replace($re, '', $line)))) {
+                $line = preg_replace($re, '<span class="emoji-large">$0</span>', $line);
+            }
+        }
+
+        return implode("\n", $lines);
+    }
+
+
+    private function processMention(string $mention) : ?array {
         if (!isset($this->users[$mention])) {
             return null;
         }
@@ -90,7 +121,7 @@ class PostProcessor {
         ];
     }
 
-    public function processLink(array $link) : ?array {
+    private function processLink(array $link) : ?array {
         if (isset($link['element']['attributes']['href'])) {
             $url = $link['element']['attributes']['href'];
 
@@ -102,7 +133,7 @@ class PostProcessor {
         return $link;
     }
 
-    public function processImage(array $image) : ?array {
+    private function processImage(array $image) : ?array {
         if (isset($image['element']['attributes']['src'])) {
             $url = $image['element']['attributes']['src'];
 
@@ -147,12 +178,6 @@ class PostProcessor {
         }
 
         return $image;
-    }
-
-
-    private function extractPossibleMentions(string $text) : array {
-        preg_match_all('~(?<!\S)@([a-z0-9]+(?:[._]+[a-z0-9]+)*)~i', $text, $m);
-        return array_unique($m[1]);
     }
 
 }
