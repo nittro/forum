@@ -11,7 +11,8 @@ _context.invoke('App', function (DOM, Url, DateTime) {
             threshold: 0,
             viewport: null,
             installed: false,
-            fixed: false
+            fixed: false,
+            version: null
         };
 
         this._handleScroll = this._handleScroll.bind(this);
@@ -21,6 +22,7 @@ _context.invoke('App', function (DOM, Url, DateTime) {
         this._.snippetManager.on('after-update', this._handleAfterUpdate.bind(this));
     }, {
         _init: function () {
+            this._.version = DOM.getData(document.documentElement, 'version');
             this._.navbar = DOM.getByClassName('header')[0];
 
             var $d = $(document);
@@ -191,6 +193,12 @@ _context.invoke('App', function (DOM, Url, DateTime) {
 
             if ('redraw' in payload) {
                 data.redraw = payload.redraw;
+            }
+
+            if ('version' in payload && payload.version !== this._.version) {
+                this._.page.one('before-transaction', function(evt) {
+                    evt.preventDefault();
+                });
             }
         },
 

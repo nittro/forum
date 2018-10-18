@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-version="{$version}">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, shrink-to-fit=no" />
@@ -7,10 +7,10 @@
         <title>{$title}</title>
 
         <script type="application/javascript">window._stack = [];</script>
-        <link rel="stylesheet" type="text/css" href="{$basePath}/css/public.min.css" />
+        <link rel="stylesheet" type="text/css" href="{$basePath}/css/public.min.css?v={$version}" />
     </head>
     <body class="d-flex flex-column bg-light">
-        <script type="application/javascript" src="{$basePath}/js/public.min.js" async defer></script>
+        <script type="application/javascript" src="{$basePath}/js/public.min.js?v={$version}" async defer></script>
         <script type="application/javascript">/mac|ipad|iphone|ipod/i.test(navigator.platform) && document.body.classList.add('mac');</script>
 
         <header n:snippet="header" class="header navbar d-flex flex-nowrap align-items-start justify-content-start text-white-50 bg-nittro shadow-sm nittro-transition-bar nittro-transition-auto nittro-transition-full">

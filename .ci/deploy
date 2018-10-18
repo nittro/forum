@@ -22,6 +22,8 @@ ln -sfnT "$SHARED_DIR/var/sessions" "$TARGET_DIR_VERSIONED/var/sessions"
 ln -sfnT "$SHARED_DIR/public/static" "$TARGET_DIR_VERSIONED/public/static"
 ln -sfnT "$SHARED_DIR/etc/config.local.neon" "$TARGET_DIR_VERSIONED/etc/config.local.neon"
 
+"$TARGET_DIR_VERSIONED/bin/console" --quiet
+
 ln -sfnT "$TARGET_DIR_VERSIONED" "$TARGET_DIR_AUTHORITATIVE.new"
 mv -fT "$TARGET_DIR_AUTHORITATIVE.new" "$TARGET_DIR_AUTHORITATIVE"
 

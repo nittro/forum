@@ -25,11 +25,8 @@ $configurator->addParameters([
     'rootDir' => $rootDir,
     'srcDir' => $rootDir . '/src',
     'wwwDir' => $rootDir . '/public',
+    'version' => trim(@file_get_contents(__DIR__ . '/../etc/version') ?: 'dev'),
 ]);
-
-if (!is_file($rootDir . '/etc/config.local.neon')) {
-    die("Please create and set up the local configuration file!\n");
-}
 
 $configurator->addConfig($rootDir . '/etc/config.neon');
 $configurator->addConfig($rootDir . '/etc/config.local.neon');

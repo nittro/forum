@@ -36,6 +36,8 @@ abstract class BasePresenter extends CommonBasePresenter {
 
     protected function afterRender() : void {
         parent::afterRender();
+
+        $this->template->version = $this->payload->version = $this->context->parameters['version'];
         $this->template->title = $this->payload->title = $this->title;
 
         if (!isset($this->payload->scrollTo) && ($at = $this->getParameter('at')) !== null) {

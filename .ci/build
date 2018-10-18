@@ -8,6 +8,8 @@ npm ci
 composer install --no-suggest --no-progress --ignore-platform-reqs
 node_modules/.bin/gulp
 
+git rev-parse --short HEAD > etc/version
+
 chmod -R go-rwx .
 chmod g+rx .
 chmod -R g+rX ./public
