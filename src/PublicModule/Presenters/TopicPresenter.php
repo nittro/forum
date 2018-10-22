@@ -167,7 +167,7 @@ class TopicPresenter extends BasePresenter {
         $this->postGet('default', [$topic]);
         $this->setView('default');
         $this->setRedrawDefault();
-        $this->topic = $topic;
+        $this->params['topic'] = $this->topic = $topic;
     }
 
 
