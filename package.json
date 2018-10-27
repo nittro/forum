@@ -22,7 +22,7 @@
         "mdarea": "0.0.10",
         "nittro": "^2.0.53",
         "nittro-extras": "^2.0.23",
-        "pump": "^3.0.0",
-        "textarea-caret": "^3.1.0"
+        "prismjs": "https://github.com/jahudka/prism/tarball/master",
+        "pump": "^3.0.0"
     }
 }

@@ -70,6 +70,8 @@
                         }
                     });
 
+                    di.getService('paginatorHelper').register(paginator);
+
                     paginator._.previousLock = null;
                     paginator._handleScroll();
                 }

@@ -1,11 +1,12 @@
 _context.invoke('App', function (DOM, Url, DateTime) {
 
-    var PageWidgets = _context.extend(function (page, snippetManager, scrollAgent, history) {
+    var PageWidgets = _context.extend(function (page, snippetManager, scrollAgent, history, paginatorHelper) {
         this._ = {
             page: page,
             snippetManager: snippetManager,
             scrollAgent: scrollAgent,
             history: history,
+            paginatorHelper: paginatorHelper,
             navbar: null,
             header: null,
             threshold: 0,
@@ -20,6 +21,7 @@ _context.invoke('App', function (DOM, Url, DateTime) {
         this._.snippetManager.one('after-update', this._init.bind(this));
         this._.snippetManager.on('before-update', this._handleBeforeUpdate.bind(this));
         this._.snippetManager.on('after-update', this._handleAfterUpdate.bind(this));
+        this._.paginatorHelper.on('page-rendered', this._handlePageRendered.bind(this));
     }, {
         _init: function () {
             this._.version = DOM.getData(document.documentElement, 'version');
@@ -167,6 +169,19 @@ _context.invoke('App', function (DOM, Url, DateTime) {
             }
         },
 
+        _highlightSources: function() {
+            var elems = document.getElementsByTagName('code'),
+                re = /\blanguage-/,
+                i, n;
+
+            for (i = 0, n = elems.length; i < n; i++) {
+                if (re.test(elems.item(i).className) && !elems.item(i).hasAttribute('data-higlighted')) {
+                    elems.item(i).setAttribute('data-highlighted', 'true');
+                    Prism.highlightElement(elems.item(i));
+                }
+            }
+        },
+
         _handleTransaction: function(evt) {
             var data = { redraw: null };
 
@@ -212,6 +227,12 @@ _context.invoke('App', function (DOM, Url, DateTime) {
             this._updateScrollHandler();
             this._toggle();
             this._updateTimes();
+            this._highlightSources();
+        },
+
+        _handlePageRendered: function() {
+            this._updateTimes();
+            this._highlightSources();
         },
 
         _handleScroll: function (evt) {

@@ -60,7 +60,9 @@ class TopicSubscription {
     }
 
     public function markAsRead(Post $post) : void {
-        $this->lastRead = $post->getId();
+        if (!$this->lastRead || $this->lastRead < $post->getId()) {
+            $this->lastRead = $post->getId();
+        }
     }
 
 }

@@ -16,13 +16,19 @@ const publicBuilder = new nittro.Builder({
         js: [
             'node_modules/jquery/dist/jquery.slim.min.js',
             'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
-            'node_modules/textarea-caret/index.js',
             'node_modules/keyboardevent-key-polyfill/index.js',
             'src/assets/js/init-key-polyfill.js',
-            'node_modules/mdarea/mdarea.js'
+            'node_modules/mdarea/mdarea.js',
+            'src/assets/js/init-prism.js',
+            'node_modules/prismjs/prism.js',
+            'node_modules/prismjs/components/prism-markup-templating.min.js',
+            'node_modules/prismjs/components/prism-php.min.js',
+            'node_modules/prismjs/components/prism-latte.min.js',
+            'node_modules/prismjs/components/prism-neon.min.js'
         ],
         css: [
-            'node_modules/bootstrap/dist/css/bootstrap.min.css'
+            'node_modules/bootstrap/dist/css/bootstrap.min.css',
+            'node_modules/prismjs/themes/prism.css'
         ]
     },
     base: {
@@ -50,6 +56,7 @@ const publicBuilder = new nittro.Builder({
             'src/assets/js/Forms/BootstrapErrorRenderer.js',
             'src/assets/js/ClassSwitcher.js',
             'src/assets/js/MentionSuggester.js',
+            'src/assets/js/PaginatorHelper.js',
             'src/assets/js/autogrow.js',
             'src/PublicModule/assets/js/PageWidgets.js'
         ],
@@ -71,7 +78,8 @@ const publicBuilder = new nittro.Builder({
         services: {
             formErrorRenderer: 'App.Forms.BootstrapErrorRenderer()',
             classSwitcher: 'App.ClassSwitcher()!',
-            pageWidgets: 'App.PageWidgets()!'
+            pageWidgets: 'App.PageWidgets()!',
+            paginatorHelper: 'App.PaginatorHelper()'
         }
     },
     stack: true
