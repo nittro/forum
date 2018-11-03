@@ -62,8 +62,11 @@ class CategoryPresenter extends BasePresenter {
     public function createComponentTopics() : TopicListControl {
         $topics = $this->topicManager->lookup()
             ->inCategory($this->category)
-            ->withLastPost()
-            ->withUnreadCounts($this->getUser()->getId());
+            ->withLastPost();
+
+        if ($this->getUser()->isLoggedIn()) {
+            $topics->withUnreadCounts($this->getUser()->getId());
+        }
 
         $control = $this->topicListControlFactory->create($topics);
 
