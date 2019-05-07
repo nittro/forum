@@ -8,6 +8,7 @@ use App\Entity\Mail;
 use App\Entity\Post;
 use App\Entity\Topic;
 use App\Entity\User;
+use Latte\Engine;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Utils\Random;
 
@@ -16,7 +17,7 @@ class Builder {
 
     private $templateFactory;
 
-    private $template;
+    private $templateName;
 
     private $recipient;
 
@@ -31,6 +32,9 @@ class Builder {
     private $headers = [];
 
 
+    /** @var Template */
+    private $template;
+
     private $subject;
 
     private $body;
@@ -41,11 +45,11 @@ class Builder {
     public function __construct(callable $templateFactory, User $recipient, string $template) {
         $this->templateFactory = $templateFactory;
         $this->recipient = $recipient;
-        $this->template = $template;
+        $this->templateName = $template;
     }
 
-    public function getTemplate() : string {
-        return $this->template;
+    public function getTemplateName() : string {
+        return $this->templateName;
     }
 
     public function getRecipient() : User {
@@ -154,27 +158,37 @@ class Builder {
 
     private function buildSubject() : void {
         if (!isset($this->subject)) {
-            $this->subject = trim($this->buildTemplate('subject'));
+            $this->subject = trim($this->renderBlock('subject'));
         }
     }
 
     private function buildBody() : void {
         if (!isset($this->body)) {
-            $this->body = $this->buildTemplate('txt');
+            $this->body = $this->renderBlock('plain');
         }
     }
 
     private function buildHtmlBody() : void {
         if (!isset($this->htmlBody)) {
-            $this->htmlBody = $this->buildTemplate('html');
+            $this->htmlBody = $this->renderBlock('html');
         }
     }
 
-    private function buildTemplate(string $type) : string {
-        /** @var Template $tpl */
-        $tpl = call_user_func($this->templateFactory);
-        $file = __DIR__ . sprintf('/templates/%s.%s.latte', $this->template, $type);
-        return $tpl->renderToString($file, $this->getParams());
+    private function renderBlock(string $name) : string {
+        $template = $this->getTemplate();
+        $params = $this->getParams() + $template->getParameters();
+        $latte = $template->getLatte();
+        $latte->setContentType($name === 'html' ? Engine::CONTENT_HTML : Engine::CONTENT_TEXT);
+        return $latte->renderToString($template->getFile(), $params, $name);
+    }
+
+    private function getTemplate() : Template {
+        if (!isset($this->template)) {
+            $this->template = call_user_func($this->templateFactory);
+            $this->template->setFile(__DIR__ . sprintf('/templates/%s.latte', $this->templateName));
+        }
+
+        return $this->template;
     }
 
 }
