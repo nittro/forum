@@ -3,6 +3,8 @@
 {block subject}New reply in '{$post->topic->title}' (#{$post->topic->id}){/block}
 
 {block content}
+    {capture $forumUrl}{link Public:Home:default}{/capture}
+    {capture $url}{link Public:Topic:default topic => $post->topic, r => $post->id}{/capture}
     <p>Hello @{$user->login},</p>
 
     <p>
@@ -15,7 +17,7 @@
     </blockquote>
 
     <p>
-        To view the topic please click <a href="{link Public:Topic:default topic => $post->topic, r => $post->id}">here</a>.<br />
+        To view the topic please click <a href="{$url}">here</a>.<br />
         To unsubscribe from further notifications in this topic please click <a href="{$unsubscribe}">here</a>.
     </p>
 
@@ -23,4 +25,23 @@
         Have a great day,<br />
         the Nittro Forums team
     </p>
+
+    <script type="application/ld+json">{json_encode([
+        [
+            "@context" => "http://schema.org",
+            "@type" => "EmailMessage",
+            "potentialAction" => [
+                "@type" => "ViewAction",
+                "target" => $url,
+                "url" => $url,
+                "name" => "View Topic",
+            ],
+            "description" => "View this topic on Nittro Forums",
+            "publisher" => [
+                "@type" => "Organization",
+                "name" => "Nittro Forums",
+                "url" => $forumUrl,
+            ],
+        ],
+    ])}</script>
 {/block}
