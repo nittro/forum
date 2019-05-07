@@ -5,6 +5,7 @@
 {block content}
     {capture $forumUrl}{link Public:Home:default}{/capture}
     {capture $url}{link Public:Topic:default topic => $post->topic, r => $post->id}{/capture}
+
     <p>Hello @{$user->login},</p>
 
     <p>
@@ -26,7 +27,7 @@
         the Nittro Forums team
     </p>
 
-    <script type="application/ld+json">{json_encode([
+    {php echo Nette\Utils\Html::el('script', ['type' => 'application/ld+json'])->setText(json_encode([
         [
             "@context" => "http://schema.org",
             "@type" => "EmailMessage",
@@ -43,5 +44,5 @@
                 "url" => $forumUrl,
             ],
         ],
-    ])}</script>
+    ]))}
 {/block}
