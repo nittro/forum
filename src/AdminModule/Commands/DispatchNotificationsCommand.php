@@ -100,16 +100,26 @@ class DispatchNotificationsCommand extends Command {
                 $mail = $builder->buildMail();
                 $this->mailManager->persistAndFlush($mail);
 
-                $unsubscribe = $this->linkGenerator->link('Public:Mail:unsubscribe', [
+                $forumUrl = $this->linkGenerator->link('Public:Home:default');
+
+                $topicUrl = $this->linkGenerator->link('Public:Topic:default', [
+                    'topic' => $post->topic,
+                    'r' => $post->id,
+                ]);
+
+                $unsubscribeUrl = $this->linkGenerator->link('Public:Mail:unsubscribe', [
                     'msgid' => $mail->getId(),
                     'token' => $builder->getToken(),
                 ]);
 
-                $builder->setParam('unsubscribe', $unsubscribe);
+                $builder->setParam('forumUrl', $forumUrl);
+                $builder->setParam('topicUrl', $topicUrl);
+                $builder->setParam('unsubscribeUrl', $unsubscribeUrl);
+
                 $builder->setHeader('Message-ID', sprintf('<n%d.%d.%d@forum.nittro.org>', $mail->getId(), $post->getId(), $post->getTopic()->getId()));
                 $builder->setHeader('List-ID', sprintf('<t%d@forum.nittro.org>', $post->getTopic()->getId()));
                 $builder->setHeader('List-Archive', sprintf('<%s>', $this->linkGenerator->link('Public:Topic:default', ['topic' => $post->topic])));
-                $builder->setHeader('List-Unsubscribe', sprintf('<%s>', $unsubscribe));
+                $builder->setHeader('List-Unsubscribe', sprintf('<%s>', $unsubscribeUrl));
                 $builder->setHeader('Precedence', 'list');
                 $builder->setHeader('X-Auto-Response-Suppress', 'All');
                 $this->mailer->send($builder->buildMessage());

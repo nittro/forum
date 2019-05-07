@@ -1,33 +1,29 @@
-{extends '@layout.html.latte'}
+{include '@styles.html.latte'}
 
-{block subject}New topics in your subscribed categories at Nittro Forums{/block}
+<p>Hello @{$user->login},</p>
 
-{block content}
-    <p>Hello @{$user->login},</p>
+<p>
+    {if count($posts) > 1}
+        There's a couple of new topics in one or more of your subscribed categories at Nittro Forums:
+    {else}
+        There's a new topic in one of your subscribed categories at Nittro Forums:
+    {/if}
+</p>
 
-    <p>
-        {if count($posts) > 1}
-            There's a couple of new topics in one or more of your subscribed categories at Nittro Forums:
-        {else}
-            There's a new topic in one of your subscribed categories at Nittro Forums:
-        {/if}
-    </p>
+<ul>
+    {foreach $posts as $post}
+        <li>
+            <a href="{link Public:Topic:default $post->topic}">
+                <strong>{$post->topic->title}</strong>
+            </a><br />
+            (created by <strong>@{$post->author->login}</strong>
+            <time n:datetime="$post->postedOn, true" />
+            in <strong>{$post->topic->category->name}</strong>)
+        </li>
+    {/foreach}
+</ul>
 
-    <ul>
-        {foreach $posts as $post}
-            <li>
-                <a href="{link Public:Topic:default $post->topic}">
-                    <strong>{$post->topic->title}</strong>
-                </a><br />
-                (created by <strong>@{$post->author->login}</strong>
-                <time n:datetime="$post->postedOn, true" />
-                in <strong>{$post->topic->category->name}</strong>)
-            </li>
-        {/foreach}
-    </ul>
-
-    <p>
-        Have a great day,<br />
-        the Nittro Forums team
-    </p>
-{/block}
+<p>
+    Have a great day,<br />
+    the Nittro Forums team
+</p>

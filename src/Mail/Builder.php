@@ -77,7 +77,7 @@ class Builder {
     }
 
     public function getSubject() : string {
-        $this->extractSubject();
+        $this->buildSubject();
         return $this->subject;
     }
 
@@ -152,6 +152,12 @@ class Builder {
 
 
 
+    private function buildSubject() : void {
+        if (!isset($this->subject)) {
+            $this->subject = trim($this->buildTemplate('subject'));
+        }
+    }
+
     private function buildBody() : void {
         if (!isset($this->body)) {
             $this->body = $this->buildTemplate('txt');
@@ -161,16 +167,6 @@ class Builder {
     private function buildHtmlBody() : void {
         if (!isset($this->htmlBody)) {
             $this->htmlBody = $this->buildTemplate('html');
-        }
-    }
-
-    private function extractSubject() : void {
-        if (!isset($this->subject)) {
-            if (preg_match('~<title>(.+?)</title>~is', $this->getHtmlBody(), $m)) {
-                $this->subject = trim(html_entity_decode($m[1], ENT_QUOTES, 'UTF-8'));
-            } else {
-                throw new \RuntimeException('Cannot extract e-mail subject from template');
-            }
         }
     }
 

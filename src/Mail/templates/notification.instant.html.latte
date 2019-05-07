@@ -1,48 +1,41 @@
-{extends '@layout.html.latte'}
+{include '@styles.html.latte'}
 
-{block subject}New reply in '{$post->topic->title}' (#{$post->topic->id}){/block}
+<p>Hello @{$user->login},</p>
 
-{block content}
-    {capture $forumUrl}{link Public:Home:default}{/capture}
-    {capture $url}{link Public:Topic:default topic => $post->topic, r => $post->id}{/capture}
+<p>
+    <strong>@{$post->author->login}</strong> recently posted a new reply
+    in <strong>{$post->topic->title}</strong> at Nittro Forums:
+</p>
 
-    <p>Hello @{$user->login},</p>
+<blockquote>
+    {$post->text|noescape}
+</blockquote>
 
-    <p>
-        <strong>@{$post->author->login}</strong> recently posted a new reply
-        in <strong>{$post->topic->title}</strong> at Nittro Forums:
-    </p>
+<p>
+    To view the topic please click <a href="{$topicUrl}">here</a>.<br />
+    To unsubscribe from further notifications in this topic please click <a href="{$unsubscribeUrl}">here</a>.
+</p>
 
-    <blockquote>
-        {$post->text|noescape}
-    </blockquote>
+<p>
+    Have a great day,<br />
+    the Nittro Forums team
+</p>
 
-    <p>
-        To view the topic please click <a href="{$url}">here</a>.<br />
-        To unsubscribe from further notifications in this topic please click <a href="{$unsubscribe}">here</a>.
-    </p>
-
-    <p>
-        Have a great day,<br />
-        the Nittro Forums team
-    </p>
-
-    {php echo Nette\Utils\Html::el('script', ['type' => 'application/ld+json'])->setText(json_encode([
-        [
-            "@context" => "http://schema.org",
-            "@type" => "EmailMessage",
-            "potentialAction" => [
-                "@type" => "ViewAction",
-                "target" => (string) $url,
-                "url" => (string) $url,
-                "name" => "View Topic",
-            ],
-            "description" => "View this topic on Nittro Forums",
-            "publisher" => [
-                "@type" => "Organization",
-                "name" => "Nittro Forums",
-                "url" => (string) $forumUrl,
-            ],
+{php echo Nette\Utils\Html::el('script', ['type' => 'application/ld+json'])->setText(json_encode([
+    [
+        "@context" => "http://schema.org",
+        "@type" => "EmailMessage",
+        "potentialAction" => [
+            "@type" => "ViewAction",
+            "target" => $topicUrl,
+            "url" => $topicUrl,
+            "name" => "View Topic",
         ],
-    ]))}
-{/block}
+        "description" => "View this topic on Nittro Forums",
+        "publisher" => [
+            "@type" => "Organization",
+            "name" => "Nittro Forums",
+            "url" => $forumUrl,
+        ],
+    ],
+], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT))}
