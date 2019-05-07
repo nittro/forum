@@ -33,15 +33,15 @@
             "@type" => "EmailMessage",
             "potentialAction" => [
                 "@type" => "ViewAction",
-                "target" => $url,
-                "url" => $url,
+                "target" => (string) $url,
+                "url" => (string) $url,
                 "name" => "View Topic",
             ],
             "description" => "View this topic on Nittro Forums",
             "publisher" => [
                 "@type" => "Organization",
                 "name" => "Nittro Forums",
-                "url" => $forumUrl,
+                "url" => (string) $forumUrl,
             ],
         ],
     ]))}
