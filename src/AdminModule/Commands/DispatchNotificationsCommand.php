@@ -10,7 +10,6 @@ use App\Entity\Notification;
 use App\Entity\Post;
 use App\Entity\Topic;
 use App\Entity\User;
-use App\Mail\Builder;
 use App\Mail\Mailer;
 use App\ORM\Manager\MailManager;
 use App\ORM\Manager\NotificationManager;
@@ -72,7 +71,15 @@ class DispatchNotificationsCommand extends Command {
         }
 
         foreach ($this->notificationManager->getNotifiableUsers($level) as $user) {
-            $this->dispatchNotifications($user, $level);
+            $this->em->beginTransaction();
+
+            try {
+                $this->dispatchNotifications($user, $level);
+                $this->em->commit();
+            } catch (\Throwable $e) {
+                $this->em->rollback();
+                throw $e;
+            }
         }
 
         return 0;
@@ -119,6 +126,7 @@ class DispatchNotificationsCommand extends Command {
                 $builder->setHeader('Message-ID', sprintf('<n%d.%d.%d@forum.nittro.org>', $mail->getId(), $post->getId(), $post->getTopic()->getId()));
                 $builder->setHeader('List-ID', sprintf('<t%d@forum.nittro.org>', $post->getTopic()->getId()));
                 $builder->setHeader('List-Archive', sprintf('<%s>', $this->linkGenerator->link('Public:Topic:default', ['topic' => $post->topic])));
+                $builder->setHeader('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
                 $builder->setHeader('List-Unsubscribe', sprintf('<%s>', $unsubscribeUrl));
                 $builder->setHeader('Precedence', 'list');
                 $builder->setHeader('X-Auto-Response-Suppress', 'All');

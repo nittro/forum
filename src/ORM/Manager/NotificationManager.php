@@ -128,7 +128,7 @@ class NotificationManager {
         );
 
         $query->setParameter(1, $level);
-        $query->setParameter(2, new \DateTimeImmutable('-4 minutes'));
+        $query->setParameter(2, new \DateTimeImmutable(/*'-4 minutes'*/));
         return $query->getResult();
     }
 

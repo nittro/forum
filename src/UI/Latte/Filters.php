@@ -65,4 +65,9 @@ class Filters {
         return $this->avatarManager->getAvatarUrl($user, $size);
     }
 
+    public function normalizeMailText(string $content, ?string $prefix = null) : string {
+        $max = 75 - ($prefix ? strlen($prefix) : 0);
+        return preg_replace('~(?<!\A)^~m', $prefix, wordwrap(trim($content), $max, "\n", true));
+    }
+
 }

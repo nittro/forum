@@ -1,0 +1,16 @@
+Hello @{$user->login},
+
+{block |normalizeMail}
+@{$post->author->login} recently posted a new reply in "{$post->topic->title}" at Nittro Forums:
+{/block}
+
+> {$post->textSource|normalizeMail:'> '}
+
+You can view the topic by visiting the following address in your browser:
+
+{block |normalizeMail}
+{link Public:Topic:default topic => $post->topic, r => $post->id}
+{/block}
+
+Have a great day,
+the Nittro Forums team

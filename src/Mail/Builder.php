@@ -32,9 +32,6 @@ class Builder {
     private $headers = [];
 
 
-    /** @var Template */
-    private $template;
-
     private $subject;
 
     private $body;
@@ -158,37 +155,33 @@ class Builder {
 
     private function buildSubject() : void {
         if (!isset($this->subject)) {
-            $this->subject = trim($this->renderBlock('subject'));
+            $this->subject = trim($this->renderTemplate('subject'));
         }
     }
 
     private function buildBody() : void {
         if (!isset($this->body)) {
-            $this->body = $this->renderBlock('plain');
+            $this->body = ltrim($this->renderTemplate('plain'));
         }
     }
 
     private function buildHtmlBody() : void {
         if (!isset($this->htmlBody)) {
-            $this->htmlBody = $this->renderBlock('html');
+            $this->htmlBody = $this->renderTemplate('html');
         }
     }
 
-    private function renderBlock(string $name) : string {
-        $template = $this->getTemplate();
-        $params = $this->getParams() + $template->getParameters();
-        $latte = $template->getLatte();
-        $latte->setContentType($name === 'html' ? Engine::CONTENT_HTML : Engine::CONTENT_TEXT);
-        return $latte->renderToString($template->getFile(), $params, $name);
+    private function renderTemplate(string $name) : string {
+        $template = $this->createTemplate();
+        $template->getLatte()->setContentType($name === 'html' ? Engine::CONTENT_HTML : Engine::CONTENT_TEXT);
+        return $template->renderToString(
+            sprintf('%s/templates/%s/%s.latte', __DIR__, $this->templateName, $name),
+            $this->getParams()
+        );
     }
 
-    private function getTemplate() : Template {
-        if (!isset($this->template)) {
-            $this->template = call_user_func($this->templateFactory);
-            $this->template->setFile(__DIR__ . sprintf('/templates/%s.latte', $this->templateName));
-        }
-
-        return $this->template;
+    private function createTemplate() : Template {
+        return call_user_func($this->templateFactory);
     }
 
 }

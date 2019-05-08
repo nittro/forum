@@ -1,0 +1,17 @@
+Hello @{$user->login},
+
+{if count($posts) > 1}
+There's a couple of new topics in one or more
+of your subscribed categories at Nittro Forums:
+{else}
+There's a new topic in one of your subscribed categories at Nittro Forums:
+{/if}
+{foreach $posts as $post}
+  - {block |normalizeMail:'    '}{$post->topic->title}
+(created by @{$post->author->login} {$post->postedOn|formatDate:true} in {$post->topic->category->name})
+{link Public:Topic:default $post->topic}
+{/block}
+
+{/foreach}
+Have a great day,
+the Nittro Forums team

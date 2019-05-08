@@ -13,7 +13,7 @@ parameters:
         default: /images/user.svg
 
     mail:
-        from: noreply@nittro.org
+        from: Nittro Forums <noreply@nittro.org>
         returnPath: postmaster@nittro.org
 
     autoSubscribedCategories: [1]
@@ -86,3 +86,4 @@ services:
             - addFilter('removeMdQuotes', [@App\UI\Latte\Filters, removeMdQuotes])
             - addFilter('formatDate', [@App\UI\Latte\Filters, formatDate])
             - addFilter('avatar', [@App\UI\Latte\Filters, getAvatarUrl])
+            - addFilter('normalizeMail', [@App\UI\Latte\Filters, normalizeMailText])
