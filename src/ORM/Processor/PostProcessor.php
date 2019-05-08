@@ -100,7 +100,6 @@ class PostProcessor {
         }
 
         $url = $this->linkGenerator->link('Public:Profile:default', ['user' => $this->users[$mention]]);
-        $url = preg_replace('~^https?://[^/]+~i', '', $url);
 
         return [
             'href' => $url,
