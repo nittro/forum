@@ -88,13 +88,17 @@ class UserPresenter extends BasePresenter {
 
     public function actionResetPassword(?int $rid = null, ?string $token = null) : void {
         if ($rid && $token) try {
-            $account = $this->passwordRequestManager->validateRequest($rid, $token);
-            $this->getUser()->login(new Identity($account));
+            $request = $this->passwordRequestManager->validateRequest($rid, $token);
+            $this->getUser()->login(new Identity($request->getAccount()));
             $this->privilegeManager->elevatePrivileges();
-        } catch (AuthenticationException $e) { }
+        } catch (AuthenticationException $e) {
+            return;
+        }
 
-        if ($this->getUser()->isLoggedIn()) {
-            $this->getComponent('password')->onPasswordChanged[] = function () {
+        if (isset($request) && $this->getUser()->isLoggedIn()) {
+            $this->getComponent('password')->onPasswordChanged[] = function () use ($request) {
+                $this->passwordRequestManager->removeRequest($request);
+
                 $this->flashMessage('Your password has been changed successfully.');
                 $this->payload->redraw = 'full';
                 $this->payload->scrollTo = 0;

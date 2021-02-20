@@ -18,7 +18,8 @@ const publicBuilder = new nittro.Builder({
             'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
             'node_modules/keyboardevent-key-polyfill/index.js',
             'src/assets/js/init-key-polyfill.js',
-            'node_modules/mdarea/mdarea.js',
+            'node_modules/mdarea/dist/mdarea.min.js',
+            'node_modules/mdarea-suggest/dist/mdarea-suggest.min.js',
             'src/assets/js/init-prism.js',
             'node_modules/prismjs/prism.js',
             'node_modules/prismjs/components/prism-markup-templating.min.js',
@@ -55,7 +56,7 @@ const publicBuilder = new nittro.Builder({
         js: [
             'src/assets/js/Forms/BootstrapErrorRenderer.js',
             'src/assets/js/ClassSwitcher.js',
-            'src/assets/js/MentionSuggester.js',
+            'src/assets/js/MarkdownAreaFactory.js',
             'src/assets/js/PaginatorHelper.js',
             'src/assets/js/autogrow.js',
             'src/PublicModule/assets/js/PageWidgets.js'
@@ -79,7 +80,8 @@ const publicBuilder = new nittro.Builder({
             formErrorRenderer: 'App.Forms.BootstrapErrorRenderer()',
             classSwitcher: 'App.ClassSwitcher()!',
             pageWidgets: 'App.PageWidgets()!',
-            paginatorHelper: 'App.PaginatorHelper()'
+            paginatorHelper: 'App.PaginatorHelper()',
+            mdareaFactory: 'App.MarkdownAreaFactory()'
         }
     },
     stack: true
@@ -156,7 +158,7 @@ function createTaskQueue(outputFile, builder) {
 
     if (type === 'js') {
         queue.push(... exclude(/\.min\.[^.]+$/,
-            uglify({compress: true, mangle: false})
+            uglify({compress: false, mangle: false})
         ));
     } else {
         queue.push(... exclude(/\.min\.[^.]+$/,

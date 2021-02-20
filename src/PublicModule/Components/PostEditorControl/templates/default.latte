@@ -29,21 +29,14 @@
     </form>
 
     <script type="application/javascript">
-        _stack.push([function (di, Mention, Url) {
+        _stack.push(function (di) {
             var ctrlKey = /mac|ipad|iphone|ipod/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey',
-                su = null,
                 md = null,
                 ag = null;
 
             di.getService('page').getSnippet({input.id form-text})
                 .setup(function (inp) {
-                    su = new Mention(di.getService('ajax'), inp, function(q) {
-                        var url = Url.from({link suggestUser!}),
-                            param = {param login};
-                        return url.setParam(param, q).toAbsolute();
-                    });
-
-                    md = new MarkdownArea(inp);
+                    md = di.getService('mdareaFactory').create(inp, {link suggestUser!}, {param login});
                     ag = new Autogrow(inp);
 
                     inp.addEventListener('keydown', function (evt) {
@@ -55,13 +48,9 @@
                     });
                 })
                 .teardown(function () {
-                    su = su && su.destroy();
                     md = md && md.destroy();
                     ag = ag && ag.destroy();
                 });
-        }, {
-            Mention: 'App.Mention',
-            Url: 'Utils.Url'
-        }]);
+        });
     </script>
 </div>

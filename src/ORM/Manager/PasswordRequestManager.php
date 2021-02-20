@@ -32,16 +32,30 @@ class PasswordRequestManager {
     }
 
 
-    public function validateRequest(int $id, string $token) : Account {
+    public function validateRequest(int $id, string $token) : PasswordRequest {
         $request = $this->requests->find($id);
 
         if (!$request || !$request->isValid($token)) {
             throw new AuthenticationException();
         }
 
+        return $request;
+    }
+
+
+    public function removeRequest(PasswordRequest $request) : void {
         $this->em->remove($request);
         $this->em->flush();
-        return $request->getAccount();
+    }
+
+
+    public function purgeExpiredRequests() : void {
+        $this->em->createQueryBuilder()
+            ->delete(PasswordRequest::class, 'r')
+            ->where('r.expiresOn < :now')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->getQuery()
+            ->execute();
     }
 
 
